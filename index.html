@@ -1,0 +1,1105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LPS Library of Things</title>
+<meta name="description" content="The Littleton Public Schools Library of Things — STEAM tools available for checkout by all LPS staff.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%230F2C3F'/%3E%3Crect x='8' y='12' width='48' height='11' fill='%231E4E6B'/%3E%3Crect x='8' y='27' width='48' height='11' fill='%23F49F5C'/%3E%3Crect x='8' y='42' width='48' height='11' fill='%231E4E6B'/%3E%3Ctext x='32' y='36.5' font-family='Arial,sans-serif' font-size='13' font-weight='bold' fill='%230F2C3F' text-anchor='middle' dominant-baseline='middle'%3ELoT%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#1E4E6B; --navy-dark:#153A51; --navy-deep:#0F2C3F;
+  --orange:#F49F5C; --orange-dark:#E8873A; --orange-soft:#FDEEDF;
+  --bg:#F6F8FA; --card:#FFFFFF; --ink:#1B2A36; --muted:#5B707F;
+  --line:#E3E9EE; --green:#2E8B57; --radius:14px;
+  --shadow:0 1px 3px rgba(15,44,63,.08),0 4px 14px rgba(15,44,63,.06);
+  --shadow-lg:0 8px 30px rgba(15,44,63,.16);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Inter',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--ink);line-height:1.55}
+h1,h2,h3,.wordmark{font-family:'Barlow Condensed','Arial Narrow',sans-serif;text-transform:uppercase;letter-spacing:.03em}
+a{color:var(--navy)}
+button{font-family:inherit;cursor:pointer}
+
+/* NAV */
+.nav{position:sticky;top:0;z-index:50;background:var(--navy-deep);color:#fff;box-shadow:var(--shadow)}
+.nav-inner{max-width:1150px;margin:0 auto;display:flex;align-items:center;gap:18px;padding:10px 20px}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff}
+.brand img{height:44px;display:block}
+.wordmark{font-size:1.25rem;font-weight:700;line-height:1.05}
+.wordmark span{color:var(--orange)}
+.nav-links{display:flex;gap:4px;margin-left:auto;flex-wrap:wrap}
+.nav-links button{background:none;border:none;color:#CBDCE8;font-size:.92rem;font-weight:600;padding:9px 13px;border-radius:8px;transition:.15s}
+.nav-links button:hover{color:#fff;background:rgba(255,255,255,.08)}
+.nav-links button.active{color:#fff;background:var(--navy)}
+.nav-cta{background:var(--orange)!important;color:var(--navy-deep)!important}
+.nav-cta:hover{background:var(--orange-dark)!important}
+
+/* LAYOUT */
+.view{display:none;max-width:1150px;margin:0 auto;padding:34px 20px 80px}
+.view.active{display:block}
+.eyebrow{color:var(--orange-dark);font-weight:700;font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;margin-bottom:6px}
+.page-title{font-size:2.3rem;color:var(--navy-dark);margin-bottom:8px}
+.page-sub{color:var(--muted);max-width:640px;margin-bottom:26px}
+
+/* HERO */
+.hero{background:linear-gradient(135deg,var(--navy-deep) 0%,var(--navy) 70%);color:#fff;border-radius:20px;padding:56px 48px;position:relative;overflow:hidden;margin-bottom:34px}
+.hero::after{content:"";position:absolute;right:-70px;top:-70px;width:320px;height:320px;border-radius:50%;background:radial-gradient(circle,rgba(244,159,92,.28),transparent 70%)}
+.hero h1{font-size:3.2rem;line-height:1.02;margin-bottom:14px}
+.hero h1 span{color:var(--orange)}
+.hero p{max-width:560px;color:#D6E4EE;font-size:1.06rem;margin-bottom:26px}
+.btn{display:inline-block;border:none;border-radius:10px;padding:13px 22px;font-weight:700;font-size:.98rem;text-decoration:none;transition:.15s}
+.btn-orange{background:var(--orange);color:var(--navy-deep)}
+.btn-orange:hover{background:var(--orange-dark)}
+.btn-ghost{background:transparent;color:#fff;border:2px solid rgba(255,255,255,.4);margin-left:10px}
+.btn-ghost:hover{border-color:#fff}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-navy:hover{background:var(--navy-dark)}
+
+/* HOME SECTIONS */
+.cat-tiles{display:grid;grid-template-columns:repeat(7,1fr);gap:10px;margin-bottom:40px}
+.cat-tile{background:var(--card);border:1.5px solid transparent;border-radius:var(--radius);padding:14px 6px;text-align:center;box-shadow:var(--shadow);cursor:pointer;transition:.15s;font-family:inherit;min-width:0}
+.cat-tile:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--orange)}
+.cat-tile .ico{font-size:1.6rem;display:block;margin-bottom:4px}
+.cat-tile b{display:block;font-family:'Barlow Condensed';text-transform:uppercase;font-size:.92rem;color:var(--navy-dark);letter-spacing:.02em;line-height:1.08}
+.cat-tile small{color:var(--muted);font-weight:600;font-size:.72rem}
+@media(max-width:900px){.cat-tiles{grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}}
+.cal-embed{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:14px;margin-bottom:40px}
+.cal-embed iframe{width:100%;height:480px;border:0;border-radius:10px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-bottom:40px}
+.step{background:var(--card);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow);border-top:4px solid var(--orange)}
+.step .num{width:34px;height:34px;border-radius:50%;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;margin-bottom:12px}
+.step h3{color:var(--navy-dark);font-size:1.25rem;margin-bottom:6px}
+.step p{color:var(--muted);font-size:.93rem}
+.section-title{font-size:1.7rem;color:var(--navy-dark);margin-bottom:16px}
+.home-flex{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:40px}
+.panel{background:var(--card);border-radius:var(--radius);padding:26px;box-shadow:var(--shadow)}
+.panel h3{color:var(--navy-dark);font-size:1.3rem;margin-bottom:10px}
+.panel p{color:var(--muted);font-size:.95rem;margin-bottom:12px}
+.contact-card{background:var(--navy-deep);color:#fff;border-radius:var(--radius);padding:26px}
+.contact-card h3{color:var(--orange);font-size:1.3rem;margin-bottom:10px}
+.contact-card p{color:#D6E4EE;font-size:.95rem;margin-bottom:6px}
+.contact-card a{color:#fff}
+
+/* CATALOG */
+.toolbar{display:flex;gap:12px;flex-wrap:wrap;align-items:center;margin-bottom:18px}
+.search{flex:1;min-width:220px;padding:12px 16px;border:1.5px solid var(--line);border-radius:10px;font-size:.95rem;font-family:inherit;background:#fff}
+.search:focus{outline:none;border-color:var(--navy)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+.chip{border:1.5px solid var(--line);background:#fff;border-radius:99px;padding:7px 15px;font-size:.85rem;font-weight:600;color:var(--muted);transition:.15s}
+.chip:hover{border-color:var(--navy);color:var(--navy)}
+.chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.chip.band.on{background:var(--orange);border-color:var(--orange);color:var(--navy-deep)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:16px}
+.card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:20px;display:flex;flex-direction:column;gap:8px;cursor:pointer;transition:.15s;border:1.5px solid transparent}
+.card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:var(--orange)}
+.card-img{aspect-ratio:4/3;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);display:flex;align-items:center;justify-content:center;margin:-6px -6px 4px}
+.card-img img{width:100%;height:100%;object-fit:cover;display:block}
+.card-img .ph{font-size:2.6rem;filter:saturate(.9)}
+.modal-img{aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:linear-gradient(135deg,var(--navy) 0%,var(--navy-dark) 100%);display:flex;align-items:center;justify-content:center;margin-bottom:16px}
+.modal-img img{width:100%;height:100%;object-fit:cover;display:block}
+.modal-img .ph{font-size:3.4rem}
+.card .cat{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--orange-dark)}
+.card h3{font-size:1.28rem;color:var(--navy-dark);line-height:1.1}
+.card .desc{font-size:.88rem;color:var(--muted);flex:1}
+.card .meta{display:flex;gap:6px;flex-wrap:wrap}
+.tag{font-size:.72rem;font-weight:600;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:3px 8px;color:var(--muted)}
+.tag.new{background:var(--orange-soft);border-color:var(--orange);color:var(--orange-dark)}
+.count-note{color:var(--muted);font-size:.9rem;margin-bottom:14px}
+
+/* MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(15,44,63,.55);z-index:100;padding:24px;overflow-y:auto}
+.overlay.open{display:flex;align-items:flex-start;justify-content:center}
+.modal{background:#fff;border-radius:18px;max-width:760px;width:100%;margin:20px 0;box-shadow:var(--shadow-lg);overflow:hidden}
+.modal-head{background:var(--navy);color:#fff;padding:26px 30px;position:relative}
+.modal-head .cat{color:var(--orange);font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.1em}
+.modal-head h2{font-size:2rem;line-height:1.05;margin:4px 0 8px}
+.modal-head .meta{display:flex;gap:8px;flex-wrap:wrap}
+.modal-head .tag{background:rgba(255,255,255,.12);border:none;color:#D6E4EE}
+.modal-close{position:absolute;top:16px;right:16px;background:rgba(255,255,255,.15);border:none;color:#fff;width:34px;height:34px;border-radius:50%;font-size:1.1rem}
+.modal-close:hover{background:rgba(255,255,255,.3)}
+.modal-body{padding:26px 30px}
+.modal-body h4{font-family:'Barlow Condensed';text-transform:uppercase;font-size:1.1rem;color:var(--navy-dark);letter-spacing:.04em;margin:18px 0 8px}
+.modal-body h4:first-child{margin-top:0}
+.modal-body p{font-size:.94rem;color:var(--ink);margin-bottom:8px}
+.modal-body ul,.modal-body ol{margin:4px 0 10px 20px;font-size:.92rem;color:var(--ink)}
+.modal-body li{margin-bottom:4px}
+.band-tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px}
+.band-tab{border:1.5px solid var(--line);background:#fff;border-radius:8px;padding:6px 14px;font-weight:700;font-size:.85rem;color:var(--muted)}
+.band-tab.on{background:var(--orange);border-color:var(--orange);color:var(--navy-deep)}
+.activity{background:var(--bg);border-radius:10px;padding:16px;border-left:4px solid var(--orange)}
+.activity b{display:block;color:var(--navy-dark);margin-bottom:4px}
+.modal-foot{padding:0 30px 26px;display:flex;gap:10px;flex-wrap:wrap}
+
+/* CHECKOUT */
+.form-wrap{max-width:640px}
+.form-card{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:30px}
+.field{margin-bottom:18px}
+.field label{display:block;font-weight:600;font-size:.9rem;margin-bottom:6px;color:var(--navy-dark)}
+.field input,.field select,.field textarea{width:100%;padding:11px 14px;border:1.5px solid var(--line);border-radius:10px;font-size:.95rem;font-family:inherit;background:#fff}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--navy)}
+.field .hint{font-size:.8rem;color:var(--muted);margin-top:4px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.checks{display:flex;flex-direction:column;gap:8px}
+.checks label{display:flex;align-items:center;gap:10px;font-weight:500;font-size:.92rem;color:var(--ink);background:var(--bg);padding:10px 14px;border-radius:10px;border:1.5px solid var(--line);cursor:pointer}
+.checks input{width:auto;accent-color:var(--orange-dark)}
+.notice{background:var(--orange-soft);border:1.5px solid var(--orange);border-radius:10px;padding:12px 16px;font-size:.88rem;color:var(--navy-dark);margin-bottom:18px}
+.success{display:none;background:#EAF6EF;border:1.5px solid var(--green);border-radius:var(--radius);padding:30px;text-align:center}
+.success h3{color:var(--green);font-size:1.5rem;margin-bottom:8px}
+.success p{color:var(--ink);font-size:.95rem}
+
+/* RETURNS + FOOTER */
+.return-steps{counter-reset:rs;max-width:700px}
+.return-step{background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);padding:22px 22px 22px 66px;margin-bottom:14px;position:relative}
+.return-step::before{counter-increment:rs;content:counter(rs);position:absolute;left:20px;top:22px;width:32px;height:32px;border-radius:50%;background:var(--orange);color:var(--navy-deep);font-weight:700;display:flex;align-items:center;justify-content:center}
+.return-step h3{color:var(--navy-dark);font-size:1.2rem;margin-bottom:4px}
+.return-step p{color:var(--muted);font-size:.93rem}
+footer{background:var(--navy-deep);color:#B9CDDA;padding:34px 20px;margin-top:0}
+.foot-inner{max-width:1150px;margin:0 auto;display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap;font-size:.9rem}
+footer a{color:#fff}
+footer .wordmark{color:#fff;font-size:1.1rem}
+footer .wordmark span{color:var(--orange)}
+
+@media(max-width:760px){
+  .hero{padding:36px 26px}.hero h1{font-size:2.3rem}
+  .home-flex{grid-template-columns:1fr}.field-row{grid-template-columns:1fr}
+  .nav-inner{flex-direction:column;gap:8px}.nav-links{margin-left:0;justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#" onclick="show('home');return false">
+      <img id="brand-logo" alt="Littleton Public Schools" onerror="this.style.display='none'">
+      <div class="wordmark">Library of <span>Things</span></div>
+    </a>
+    <div class="nav-links">
+      <button data-v="home" class="active" onclick="show('home')">Home</button>
+      <button data-v="catalog" onclick="show('catalog')">Catalog</button>
+      <button data-v="lessons" onclick="show('lessons')">Lessons &amp; How-Tos</button>
+      <button data-v="returns" onclick="show('returns')">Returns</button>
+      <button data-v="checkout" class="nav-cta" onclick="show('checkout')">Request a Thing</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HOME -->
+<section class="view active" id="v-home">
+  <div class="hero">
+    <h1>Borrow the tools.<br><span>Spark the learning.</span></h1>
+    <p>The Library of Things is a collection of STEAM resources available for checkout by any LPS staff member — robots, coding kits, video production gear, and more, delivered right to your school.</p>
+    <button class="btn btn-orange" onclick="show('catalog')">Browse the Catalog</button>
+    <button class="btn btn-ghost" onclick="show('checkout')">Request a Thing</button>
+  </div>
+
+  <h2 class="section-title">Browse by Category</h2>
+  <div class="cat-tiles" id="stats"></div>
+
+  <h2 class="section-title">What's Already Checked Out</h2>
+  <div class="cal-embed">
+    <iframe src="https://calendar.google.com/calendar/embed?src=c_d0joh11sda9fvbebec8ofbci84%40group.calendar.google.com&mode=MONTH&showTitle=0&showPrint=0&showTz=0&showCalendars=0&color=%231E4E6B" title="Library of Things availability calendar" loading="lazy"></iframe>
+  </div>
+
+  <h2 class="section-title">How It Works</h2>
+  <div class="steps">
+    <div class="step"><div class="num">1</div><h3>Browse</h3><p>Explore the catalog and check each item's how-to guide and grade-level activity ideas.</p></div>
+    <div class="step"><div class="num">2</div><h3>Check availability</h3><p>Peek at the LoT calendar to make sure your item is free when you need it.</p></div>
+    <div class="step"><div class="num">3</div><h3>Request</h3><p>Submit the checkout form with at least 3 school days of lead time for delivery.</p></div>
+    <div class="step"><div class="num">4</div><h3>Teach &amp; return</h3><p>Use it, love it, then send it back with a transfer request. Easy.</p></div>
+  </div>
+
+  <div class="home-flex">
+    <div class="panel">
+      <h3>Check Availability First</h3>
+      <p>Items are first-come, first-served. The calendar above shows current checkouts — confirm your item is free for your dates before requesting.</p>
+      <a class="btn btn-navy" href="https://www.google.com/calendar/embed?color=%239a9cff&src=c_d0joh11sda9fvbebec8ofbci84@group.calendar.google.com" target="_blank" rel="noopener">Open Full Calendar</a>
+    </div>
+    <div class="contact-card">
+      <h3>Want a Thought Partner?</h3>
+      <p>Can't decide how to use a tool? I'm happy to help with ideas, co-planning, or even co-teaching the lesson with you.</p>
+      <p style="margin-top:10px"><b>Nick Schuster</b> · Learning &amp; Teaching Team<br>
+      <a href="mailto:nschuster@lps.k12.co.us">nschuster@lps.k12.co.us</a> · 303-347-4388</p>
+    </div>
+  </div>
+
+  <h2 class="section-title">New to the Library</h2>
+  <div class="grid" id="new-grid"></div>
+</section>
+
+<!-- CATALOG -->
+<section class="view" id="v-catalog">
+  <div class="eyebrow">Browse</div>
+  <h1 class="page-title">The Catalog</h1>
+  <p class="page-sub">Click any item for full contents, a quick-start guide, and ready-to-use activity ideas by grade level.</p>
+  <div class="toolbar">
+    <input class="search" id="search" type="search" placeholder="Search items — e.g. robots, drones, coding…" oninput="renderCatalog()">
+  </div>
+  <div class="chips" id="cat-chips"></div>
+  <div class="chips" id="band-chips"></div>
+  <div class="count-note" id="count-note"></div>
+  <div class="grid" id="catalog-grid"></div>
+</section>
+
+<!-- LESSONS -->
+<section class="view" id="v-lessons">
+  <div class="eyebrow">Plan</div>
+  <h1 class="page-title">Lessons &amp; How-Tos by Grade Level</h1>
+  <p class="page-sub">Pick your grade band to see every item with a ready-to-use activity for your students. Click an item for its full guide.</p>
+  <div class="chips" id="lesson-band-chips"></div>
+  <div class="grid" id="lessons-grid"></div>
+</section>
+
+<!-- CHECKOUT -->
+<section class="view" id="v-checkout">
+  <div class="eyebrow">Check Out</div>
+  <h1 class="page-title">Request a Thing</h1>
+  <p class="page-sub">Fill this out and you'll get a confirmation email right away. A Learning &amp; Teaching team member will follow up with delivery details.</p>
+  <div class="form-wrap">
+    <div class="notice">⏱️ Please give at least <b>3 school days</b> of lead time so we can transfer your item to your school.</div>
+    <div class="form-card" id="form-card">
+      <form id="checkout-form" onsubmit="submitCheckout(event)">
+        <div class="field-row">
+          <div class="field"><label for="f-name">Your name</label><input id="f-name" name="name" required></div>
+          <div class="field"><label for="f-email">LPS email</label><input id="f-email" name="email" type="email" required placeholder="you@lps.k12.co.us"></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="f-school">School / building</label><input id="f-school" name="school" required></div>
+          <div class="field"><label for="f-role">Role</label>
+            <select id="f-role" name="role" required>
+              <option value="">Select…</option>
+              <option>Classroom Teacher</option><option>STEAM Teacher</option><option>Counselor</option>
+              <option>Paraprofessional</option><option>Specialist</option><option>Administrator</option><option>Other</option>
+            </select></div>
+        </div>
+        <div class="field"><label for="f-item">Which Thing would you like?</label>
+          <select id="f-item" name="item" required><option value="">Select an item…</option></select>
+          <div class="hint">Check the <a href="https://www.google.com/calendar/embed?color=%239a9cff&src=c_d0joh11sda9fvbebec8ofbci84@group.calendar.google.com" target="_blank" rel="noopener">LoT calendar</a> to confirm availability first.</div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="f-start">Date needed</label><input id="f-start" name="dateNeeded" type="date" required></div>
+          <div class="field"><label for="f-end">Planned return date</label><input id="f-end" name="dateReturn" type="date" required></div>
+        </div>
+        <div class="field"><label for="f-grade">Grade level(s) you'll use it with</label><input id="f-grade" name="grades" placeholder="e.g. 4th grade, 6-8"></div>
+        <div class="field"><label for="f-plan">How do you plan to use it?</label>
+          <textarea id="f-plan" name="plan" rows="3" placeholder="A sentence or two about your lesson, unit, or activity"></textarea></div>
+        <div class="field"><label>Would you like extra support? (optional)</label>
+          <div class="checks">
+            <label><input type="checkbox" name="support" value="Help getting started"> 🚀 Help getting started with the tool</label>
+            <label><input type="checkbox" name="support" value="Co-planning"> 🗂️ Co-planning a lesson or unit</label>
+            <label><input type="checkbox" name="support" value="Co-teaching"> 🍎 Co-teaching the lesson with me</label>
+          </div>
+        </div>
+        <div class="field"><label for="f-notes">Anything else?</label>
+          <textarea id="f-notes" name="notes" rows="2" placeholder="Questions, special requests, delivery notes…"></textarea></div>
+        <button class="btn btn-orange" type="submit" id="submit-btn" style="width:100%">Submit Request</button>
+      </form>
+    </div>
+    <div class="success" id="success-card">
+      <h3>🎉 Request received!</h3>
+      <p id="success-msg">Check your inbox for a confirmation email. A Learning &amp; Teaching team member will follow up with delivery details soon.</p>
+      <button class="btn btn-navy" style="margin-top:14px" onclick="resetForm()">Submit another request</button>
+    </div>
+  </div>
+</section>
+
+<!-- RETURNS -->
+<section class="view" id="v-returns">
+  <div class="eyebrow">All Done?</div>
+  <h1 class="page-title">Returning Your Thing</h1>
+  <p class="page-sub">Three quick steps to send your item back to the ESC.</p>
+  <div class="return-steps">
+    <div class="return-step"><h3>Repack everything</h3><p>Place all pieces back in the bins, bags, or boxes they arrived in. Some items include their own re-packaging instructions.</p></div>
+    <div class="return-step"><h3>Submit a transfer request</h3><p>Complete a <a href="https://littletonpublicschools.net/transfer-request-form" target="_blank" rel="noopener">Transfer Request Form</a> to send the item back to the ESC. In the comments, write: <b>"Attention: Nick Schuster or Alison Pukurdpol."</b></p></div>
+    <div class="return-step"><h3>Report any issues</h3><p>Anything damaged, lost, or weird? Email <a href="mailto:nschuster@lps.k12.co.us">nschuster@lps.k12.co.us</a> so the next borrower gets a complete kit.</p></div>
+  </div>
+</section>
+
+<!-- ITEM MODAL -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <div class="modal-head">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div class="cat" id="m-cat"></div>
+      <h2 id="m-name"></h2>
+      <div class="meta" id="m-meta"></div>
+    </div>
+    <div class="modal-body" id="m-body"></div>
+    <div class="modal-foot">
+      <button class="btn btn-orange" id="m-checkout">Check Out This Item</button>
+      <a class="btn btn-navy" id="m-guide" href="#" target="_blank" rel="noopener">📄 Download Guide (PDF)</a>
+      <button class="btn btn-navy" onclick="closeModal()">Back to Browsing</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="foot-inner">
+    <div>
+      <div class="wordmark">Library of <span>Things</span></div>
+      <p>Littleton Public Schools · Learning &amp; Teaching Team</p>
+    </div>
+    <div>
+      <b>Nick Schuster</b><br>
+      <a href="mailto:nschuster@lps.k12.co.us">nschuster@lps.k12.co.us</a><br>303-347-4388
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ============ CONFIG ============ */
+const CONFIG = {
+  // Paste your Google Apps Script Web App URL here (see LAUNCH-GUIDE):
+  APPS_SCRIPT_URL: "https://script.google.com/macros/s/AKfycbxu89tOc3WINWx3eXWnjak1v8MOWgPC9gmc8bJm5hl49fx-kmDd5XAGKmJoibQaOTAnMA/exec",
+  FALLBACK_EMAIL: "nschuster@lps.k12.co.us",
+  // Where the images/, guides/, and logo files live. Leave "" when those folders
+  // sit next to this file. For Thrillshare or any host without file uploads, set to
+  // your asset host URL WITH trailing slash, e.g. "https://USERNAME.github.io/lot-assets/"
+  ASSET_BASE: "https://lpslitwiz.github.io/lot-assets/"
+};
+
+/* ============ DATA ============ */
+/* To ADD an item: copy any block below, edit the fields, done.
+   To RETIRE an item: delete its block (or add  retired:true  to hide it).
+   bands: which grade-band activities exist — "K-2","3-5","6-8","9-12"
+   isNew: shows the NEW badge on the site.                              */
+const ITEMS = [
+/* ===== CODING & CIRCUITRY ===== */
+{id:"circuit-playground",name:"Adafruit Circuit Playground Kit",cat:"Coding & Circuitry",qty:"1 kit · 10 boards",
+ short:"Round, sensor-packed boards with LEDs, buttons, and sound — code them in your browser with blocks or JavaScript.",
+ contents:["10 Adafruit Circuit Playground boards","10 protective covers","10 battery packs"],
+ bands:["3-5","6-8"],
+ howto:["Plug a board into a Chromebook/laptop via USB.","Go to makecode.adafruit.com and start a new project.","Drag blocks to control the 10 built-in LEDs, buttons, and sensors.","Click Download and drag the file onto the CPLAYBOOT drive that appears.","Unplug, attach the battery pack, and the program runs anywhere!"],
+ acts:{"3-5":{t:"Mood Ring Machine",d:"Students code the LED ring to change color based on the temperature sensor, then 'read' classmates' moods by touch. Ties into data collection: chart the readings across the room and discuss why they vary."},
+       "6-8":{t:"Step Counter Challenge",d:"Teams use the accelerometer to build a wearable step counter, then test and calibrate it against a real pedometer. Great entry point for discussing sensors, thresholds, and measurement error."}},
+ tip:"No installs needed — MakeCode runs fully in the browser, perfect for Chromebooks."},
+
+{id:"microbit",name:"Micro:bit Kit",cat:"Coding & Circuitry",qty:"2 kits · 14 bags each",
+ short:"The classic pocket computer: LED grid, buttons, radio, and sensors, plus servos and NeoPixel strips for physical builds.",
+ contents:["14 micro:bit bags per kit — each with micro:bit, battery pack, USB cable, alligator clips, jumper cables, servo motor, NeoPixel LED strip","Demo code: Light Level Color Range, Light Level Twinkle Rate, NeoPixel Demo"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Plug the micro:bit into a computer via USB.","Open makecode.microbit.org and create a project.","Code with blocks (or flip to Python/JavaScript for older students).","Click Download — drag the .hex file to the MICROBIT drive.","Use alligator clips to attach servos or NeoPixels for physical computing."],
+ acts:{"3-5":{t:"Name Badge + Emotion Meter",d:"Students program scrolling name badges, then add a button-press 'emotion meter' that shows how they're feeling on the LED grid. A friendly first project that builds input/output vocabulary."},
+       "6-8":{t:"Radio Secret Messages",d:"Pairs use the built-in radio to send encrypted messages between micro:bits, inventing their own cipher. Connects computing to codes, ciphers, and digital citizenship conversations."},
+       "9-12":{t:"NeoPixel Data Display",d:"Students build an ambient data display — a light strip that visualizes live sensor data (sound level, temperature, light) with color mapping. Extendable into MicroPython for CS classes."}},
+ tip:"Pair with the Gator Science Kit for environmental science investigations."},
+
+{id:"gator-science",name:"Micro:bit Gator Science Kit",cat:"Coding & Circuitry",qty:"1 kit",
+ short:"Turns micro:bits into science probes: soil moisture, UV, audio, and environmental sensors.",
+ contents:["Gator boards with audio output","UV sensor","Soil moisture sensor","Environmental sensors","NOTE: requires accessories from a Micro:bit Kit — best checked out together"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Check out a Micro:bit Kit alongside this one.","Clip a gator board to the micro:bit with alligator clips.","In MakeCode, add the gator:bit extension for sensor blocks.","Code readings to the LED display or log them over time.","Head outside and start measuring!"],
+ acts:{"3-5":{t:"Thirsty Plants Investigation",d:"Students probe classroom plants with the soil moisture sensor, rank which need water, and set up a watering schedule based on real data. Simple, visual, and genuinely useful."},
+       "6-8":{t:"Playground Microclimates",d:"Teams map UV and temperature across different playground spots, graph results, and argue from evidence where a new bench or garden should go."},
+       "9-12":{t:"Environmental Data Logger",d:"Students design a multi-day logging experiment (soil, UV, temp), export the data, and analyze trends in Sheets — a full data-science cycle with hardware they configured themselves."}},
+ tip:"Best paired with a Micro:bit Kit checkout — the gator boards need the micro:bits and clips."},
+
+{id:"scratch-cards",name:"Scratch Coding Cards",cat:"Coding & Circuitry",qty:"Card set",
+ short:"Step-by-step activity cards for building games, stories, and animations in Scratch.",
+ contents:["Scratch coding activity card decks — games, stories, music, and interactive environments"],
+ bands:["K-2","3-5","6-8"],
+ howto:["Open scratch.mit.edu (free, no login needed to create).","Give each student or pair a card deck theme.","Cards walk students step-by-step through each build.","Finished early? Flip the card for remix challenges."],
+ acts:{"K-2":{t:"Animate Your Name",d:"Students make each letter of their name dance, spin, and make sounds. Builds mouse skills and sequencing with a product they're proud to show."},
+       "3-5":{t:"Chase Game Studio",d:"Using the game cards, students build a chase game, then playtest a partner's game and leave 'two stars and a wish' feedback — coding plus peer critique."},
+       "6-8":{t:"Interactive Story Jam",d:"Students storyboard a choose-your-own-adventure story, then build it in Scratch with broadcasts and variables. Strong ELA crossover for narrative writing."}},
+ tip:"Cards work great as a self-serve station — students can progress without whole-class instruction."},
+
+{id:"raspberry-pi",name:"Canakit Raspberry Pi 3",cat:"Coding & Circuitry",qty:"2 kits + 1 extra Pi",
+ short:"A full credit-card-sized computer for building projects, servers, and learning Linux.",
+ contents:["2 Canakit Raspberry Pi 3 kits","1 extra Raspberry Pi board","Power sources"],
+ bands:["6-8","9-12"],
+ howto:["Connect the Pi to a monitor (HDMI), keyboard, and mouse.","Insert the included SD card and power it on.","Raspberry Pi OS boots to a desktop — Python, Scratch, and Minecraft Pi are preinstalled.","Try a first project from projects.raspberrypi.org."],
+ acts:{"6-8":{t:"Minecraft Python Mods",d:"Students use Python to manipulate the Minecraft Pi world — teleporting, auto-building structures, and setting block traps. Sneaky-effective intro to real text-based coding."},
+       "9-12":{t:"Build a Web Server",d:"Small groups turn a Pi into a working web server hosting a page they wrote, then discuss how the internet actually serves content. Great for CS or business-tech electives."}},
+ tip:"Plan for monitor/keyboard access — the Pi needs peripherals, so a computer-lab corner works well."},
+
+{id:"codrones",name:"CoDrone Kit",cat:"Coding & Circuitry",qty:"1 kit · 18 drones",
+ short:"Programmable classroom drones students code to launch, fly patterns, and land.",
+ contents:["18 CoDrones","Coded landing pads","Extra batteries and chargers","Spare propellers and body frames"],
+ bands:["6-8","9-12"],
+ howto:["Charge all batteries before class (allow ~40 min).","Students code flight paths in Blockly or Python via the CoDrone app/software.","Start with takeoff-hover-land before any movement code.","Fly in a gym or large clear space — set a strict launch-zone routine.","Rotate batteries; each flight is ~8 minutes."],
+ acts:{"6-8":{t:"Rescue Mission Coding",d:"Teams program drones to fly a 'search and rescue' route over a taped grid map, landing precisely on target zones. Iteration and measurement disguised as a mission."},
+       "9-12":{t:"Autonomous Flight Trials",d:"Students write Python flight programs to complete a timed obstacle course without manual control, logging trial data and refining parameters — engineering process, for real."}},
+ tip:"Establish 'props stop before hands touch' as rule one. Extra parts are included for the inevitable crash."},
+
+{id:"makey-makey",name:"Makey Makey STEM Kit",cat:"Coding & Circuitry",qty:"16 setups",
+ short:"Turn bananas, foil, playdough — anything conductive — into keyboards and game controllers.",
+ contents:["16 Makey Makey boards","Alligator clips","USB cables"],
+ bands:["K-2","3-5","6-8"],
+ howto:["Plug the Makey Makey into a computer via USB — no software needed.","Clip one alligator clip to 'Earth' and hold the other end.","Clip another to an arrow key and touch anything conductive to trigger it.","Pair with Scratch to build custom instruments and controllers."],
+ acts:{"K-2":{t:"Fruit Piano",d:"Students wire up a piano from fruit or playdough and explore what conducts electricity and what doesn't — sorting materials into 'works/doesn't work' as young scientists."},
+       "3-5":{t:"Interactive Poster",d:"Students create a poster (animal habitats, book report, biography) with foil touchpoints that trigger recorded Scratch narrations. Instant museum exhibit."},
+       "6-8":{t:"Game Controller Design",d:"Teams design and build a custom physical controller for a Scratch game they've made, testing for usability. UX design meets circuitry."}},
+ tip:"Playdough is the most reliable conductor for little hands — keep a tub handy."},
+
+{id:"tinker-kit",name:"Electronics Tinker Kit",cat:"Coding & Circuitry",qty:"1 kit",
+ short:"Arduinos, breadboards, and components for open-ended electronics tinkering.",
+ contents:["3 Arduino Uno kits","Electronics Fun Kit","Breadboards"],
+ bands:["6-8","9-12"],
+ howto:["Start with the breadboard: power rails outside, components inside.","Build a simple LED + resistor circuit before adding the Arduino.","Use the Arduino IDE (or Tinkercad Circuits online to prototype first).","Upload the classic Blink sketch, then modify it."],
+ acts:{"6-8":{t:"Tinkercad-to-Table",d:"Students prototype a circuit in free Tinkercad Circuits online, then build the real version on a breadboard. Digital-to-physical transfer catches misconceptions fast."},
+       "9-12":{t:"Sensor Alarm Build",d:"Students engineer an alarm that triggers on light, motion, or a tripped wire, then write up how they'd improve v2. Solid intro to embedded systems thinking."}},
+ tip:"Tinkercad Circuits (free, browser) lets the whole class simulate before touching hardware."},
+
+{id:"arduino-starter",name:"Arduino Uno Starter Set Kit",cat:"Coding & Circuitry",qty:"1 kit · 12 sets",
+ short:"A dozen Elegoo Arduino starter sets — enough for a whole class to learn coding and circuitry.",
+ contents:["12 Elegoo Arduino Uno starter sets with components, sensors, and project guides"],
+ bands:["6-8","9-12"],
+ howto:["Install the Arduino IDE (or use the web editor).","Each Elegoo set includes a guide — start with Lesson 1: Blink.","Progress through LEDs → buttons → sensors → displays.","Pairs work well: one drives the wiring diagram, one builds."],
+ acts:{"6-8":{t:"Traffic Light City",d:"Pairs build and program a working traffic light, then link intersections into a coordinated 'city grid' on one table. Timing logic with a visible payoff."},
+       "9-12":{t:"Design-a-Device",d:"Teams identify a small real-world problem (plant monitor, door alert, study timer) and build a working prototype from kit components, pitching their device demo-day style."}},
+ tip:"The included Elegoo lesson PDFs are genuinely good — let students self-pace through them."},
+
+{id:"code-mouse",name:"Code Mouse Kits",cat:"Coding & Circuitry",qty:"2 kits · 12 mice each",
+ short:"Screen-free programmable mice that follow button-press sequences through build-your-own mazes.",
+ contents:["12 Code Mice per kit","Maze platforms and walls","Code sequence blocks"],
+ bands:["K-2"],
+ howto:["Build a simple maze with the platforms and walls.","Students plan the mouse's route using the code blocks (arrows).","Press the same sequence on the mouse's back buttons.","Hit Go — debug and retry until the mouse reaches the cheese!"],
+ acts:{"K-2":{t:"Cheese Quest",d:"Students build mazes for each other and program the mouse through them, laying physical code-block 'programs' before pressing buttons. Sequencing, debugging, and turn-taking — no screens required."}},
+ tip:"Have students always lay out the code blocks first — it makes their thinking visible and debuggable."},
+
+{id:"coding-critters",name:"Coding Critters",cat:"Coding & Circuitry",qty:"7 kits",
+ short:"Adorable screen-free coding pets with story-based play for the youngest coders.",
+ contents:["7 Coding Critter kits — critter plus playset materials"],
+ bands:["K-2"],
+ howto:["Pick a critter and its storybook challenge.","Students press the directional buttons to plan the path.","Press play and watch the critter go.","Use the playset pieces to build new challenges."],
+ acts:{"K-2":{t:"Critter Rescue Stories",d:"Students code their critter through a rescue story they invent ('get the puppy to its bone past the slide'), then retell the sequence in words. Coding meets narrative retelling."}},
+ tip:"The included storybooks make great small-group station guides."},
+
+{id:"oculus",name:"Oculus Quest 2 Kits",cat:"Coding & Circuitry",qty:"4 kits",
+ short:"Standalone VR headsets for immersive field trips, 3D creation, and career exploration.",
+ contents:["4 Oculus Quest 2 headsets","Controllers","Charging cables"],
+ bands:["6-8","9-12"],
+ howto:["Charge headsets fully before class.","Set a Guardian boundary in a clear space for each headset.","Use as a rotation station — 4 headsets means small groups.","Preview any app/experience yourself first.","Sanitize face pads between users."],
+ acts:{"6-8":{t:"VR Field Trip + Travel Log",d:"Students rotate through a curated VR 'field trip' (ocean, space, historical site) and write sensory-rich travel journal entries afterward. The writing quality jump is real."},
+       "9-12":{t:"Career Immersion Day",d:"Students explore job-simulation and training experiences in VR, then research the real career's pathway, salary, and required education. Strong fit for counselor-led sessions."}},
+ tip:"Motion comfort varies — always offer an opt-out role like 'navigator' or 'note-taker.'"},
+
+{id:"codapillar",name:"Code-a-Pillar",cat:"Coding & Circuitry",qty:"1",
+ short:"A segment-by-segment programmable caterpillar for pre-readers' first sequencing.",
+ contents:["1 Code-a-Pillar with rearrangeable direction segments"],
+ bands:["K-2"],
+ howto:["Snap segments together — each is one instruction (forward, left, right).","Press Go and watch it crawl the sequence.","Rearrange segments to change the program.","Set targets on the floor to crawl toward."],
+ acts:{"K-2":{t:"Get to the Leaf",d:"Place a paper 'leaf' across the rug and have students arrange segments to reach it, predicting before each run. Prediction, test, revise — the whole scientific method in caterpillar form."}},
+ tip:"Great single-station tool for centers; pairs naturally with Code Mouse for a K-2 coding day."},
+
+{id:"kano",name:"Kano Kit",cat:"Coding & Circuitry",qty:"1 kit",
+ short:"A build-it-yourself computer kit — students assemble the machine, then learn to code on it.",
+ contents:["1 Kano computer kit with step-by-step build book"],
+ bands:["3-5","6-8"],
+ howto:["Follow the illustrated book to assemble the computer.","Boot up and complete the on-screen setup story.","Work through Kano's coding challenges and apps.","Connect to a monitor or TV via HDMI."],
+ acts:{"3-5":{t:"Build the Machine",d:"A small group assembles the computer from parts, naming each component's job as they go, then demos 'their' computer to the class. Demystifies what's inside every device they use."},
+       "6-8":{t:"Hardware Anatomy Lab",d:"Students assemble the Kano, diagram its components, and compare them to the parts of a school Chromebook — a concrete intro to computer architecture."}},
+ tip:"One kit = one small group at a time; works well as a rotating 'engineer of the week' station."},
+
+{id:"gaming-laptop",name:"Gaming Laptop",cat:"Coding & Circuitry",qty:"1 · Lenovo Legion 5",
+ short:"A high-powered laptop (RTX 3050, i7) for 3D design, video editing, VR, or esports exploration.",
+ contents:["Lenovo Legion 5 15\" — i7-12700H, 16 GB RAM, 1 TB SSD, RTX 3050, Windows 11"],
+ bands:["6-8","9-12"],
+ howto:["Check out alongside tools that need horsepower (EinScan 3D scanner, video editing, Unity).","Charge fully; gaming laptops drain fast unplugged.","Create a student-use account/profile if multiple students will use it."],
+ acts:{"6-8":{t:"Studio Workstation",d:"Use as the 'render station' for a video production or 3D printing project — students queue their heavy exports here while working on Chromebooks. Teaches real production workflow."},
+       "9-12":{t:"Game Design Bench",d:"Students prototype in a real engine (Unity/Unreal/Godot) that Chromebooks can't run, exploring game design as a career pathway."}},
+ tip:"This is the muscle behind the EinScan 3D scanner — consider checking them out together."},
+/* ===== ENGINEERING & MAKING ===== */
+{id:"blueprint-engineering",name:"Sphero Blueprint Engineering Class Pack",cat:"Engineering & Making",qty:"15 kits",isNew:true,
+ short:"Sphero's build system for real mechanical engineering — gears, linkages, motors, and machines students design and iterate.",
+ contents:["15 Blueprint Build Kits with beams, plates, gears, axles, and connectors","Motion components for building working mechanisms","Storage cases"],
+ bands:["6-8","9-12"],
+ howto:["Start with a guided build from Sphero's Blueprint lessons to learn the connector system.","Explore gears and gear ratios with a simple crank build.","Move to open-ended challenges: students design, build, test, iterate.","Sort pieces back into case compartments at cleanup — future you says thanks."],
+ acts:{"6-8":{t:"Gear Ratio Grand Prix",d:"Teams build hand-cranked machines with different gear ratios and compete for speed vs. torque tasks, recording ratio data as they iterate. Mechanical advantage becomes something they can feel."},
+       "9-12":{t:"Mechanism Design Challenge",d:"Students reverse-engineer an everyday mechanism (umbrella, clamp, latch), then design and build their own linkage-based device that solves a problem they choose, documenting the engineering process in a design brief."}},
+ tip:"Blueprint's free lesson library on Sphero EDU maps builds to engineering standards."},
+
+{id:"blueprint-snap",name:"Sphero Blueprint Snap Class Pack",cat:"Engineering & Making",qty:"16 kits",isNew:true,
+ short:"The snap-together entry point to Blueprint — younger engineers build working mechanisms without tools.",
+ contents:["16 Blueprint Snap kits with tool-free snap connectors, beams, gears, and motion pieces"],
+ bands:["3-5","6-8"],
+ howto:["Pieces snap together by hand — no tools needed.","Run a 10-minute free-build first so students learn the connections.","Follow a guided build, then remix it with a 'what if' twist.","Use the challenge cards/lessons from Sphero EDU."],
+ acts:{"3-5":{t:"Snap Machines",d:"Students build a simple machine that moves (spinner, gripper, catapult-style launcher), then explain which parts push, pull, or turn. A hands-on force-and-motion vocabulary builder."},
+       "6-8":{t:"Invention Iteration Sprint",d:"Teams get a constraint ('lift this eraser 10 cm') and three timed build rounds to improve their design, journaling changes between rounds. Iteration becomes the habit, not the exception."}},
+ tip:"Snap and the full Blueprint system share DNA — Snap in elementary sets up Blueprint in secondary."},
+
+{id:"pocket-labs",name:"Pocket Labs Science Kit",cat:"Engineering & Making",qty:"1 kit",
+ short:"Wireless sensors plus measurement tools for hands-on physics and data collection.",
+ contents:["3 PocketLab Voyagers (motion, magnetic, temp, pressure sensors)","1 scale","1 100-ft measuring tape","1 compass","2 analog clocks"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Connect a Voyager to a device via Bluetooth using the PocketLab app.","Pick a sensor stream (acceleration, altitude, magnetic field…).","Attach it to whatever's moving — cart, ball, shoe, sled.","Record, graph, and export the data live."],
+ acts:{"3-5":{t:"Playground Physics Hunt",d:"Students strap a Voyager to slides and swings, predict which produces the biggest acceleration spikes, and check the live graphs. Real data from their own bodies in motion."},
+       "6-8":{t:"Crash Test Engineering",d:"Teams build cardboard bumpers for a cart carrying a Voyager, competing for the lowest impact reading. Data-driven engineering with a satisfying crunch."},
+       "9-12":{t:"Motion Graph Matching",d:"Students physically recreate given velocity/acceleration graphs by moving a sensor, then design graph puzzles for classmates. Kinematics intuition you can't get from worksheets."}},
+ tip:"The PocketLab app graphs in real time — project it so the whole class sees data appear as it happens."},
+
+{id:"keva",name:"Keva Planks",cat:"Engineering & Making",qty:"2 kits · 500 planks each",
+ short:"Precision-cut wooden planks for tower, bridge, and structure building — no glue, no connectors, pure physics.",
+ contents:["500 Keva planks per kit","Brain Builder challenge cards"],
+ bands:["K-2","3-5","6-8"],
+ howto:["Dump, sort, build — planks stack without connectors.","Start with the Brain Builder cards for guided structures.","Move to open challenges: tallest tower, longest bridge span.","Cleanup tip: stack planks in flat rafts of 10 for fast counting."],
+ acts:{"K-2":{t:"Three Little Pigs Engineering",d:"Students build houses for the three pigs and test them against the 'wolf' (a fan or gentle push), discussing why some designs survive. Storybook STEM at its best."},
+       "3-5":{t:"Bridge Span Challenge",d:"Teams bridge an ever-widening gap between desks, testing load with small weights and recording max span vs. strength. Introduces trade-offs in design."},
+       "6-8":{t:"Earthquake-Proof Towers",d:"Students build height-constrained towers on a shake table (a tray on marbles works), iterating on base design and cross-bracing after each 'quake.'"}},
+ tip:"500 planks per kit is enough for 6-8 simultaneous small-group builds."},
+
+{id:"legos",name:"LEGO Classic Kits",cat:"Engineering & Making",qty:"3 kits",
+ short:"Open-ended classic LEGO bricks for building, storytelling, and design challenges.",
+ contents:["3 LEGO Classic kits with assorted bricks, wheels, and base elements"],
+ bands:["K-2","3-5"],
+ howto:["Set the challenge before the bricks come out — constraints spark creativity.","Use trays or mats to define each builder's space.","Photograph builds before teardown so work is preserved.","Sort-by-color cleanup races actually work."],
+ acts:{"K-2":{t:"Build-a-Setting Retell",d:"After a read-aloud, students build the story's setting in LEGO and use it to retell the plot to a partner. Comprehension check disguised as play."},
+       "3-5":{t:"20-Brick Challenge",d:"Everyone gets the same 20 random bricks and one prompt ('something that flies'). Gallery walk and vote after. Constraint-based creativity in a single class period."}},
+ tip:"Pairs beautifully with writing: build first, then describe or narrate the build."},
+
+{id:"makedo",name:"Makedo Cardboard Construction Kit",cat:"Engineering & Making",qty:"2 kits",
+ short:"Kid-safe saws and screws that turn cardboard boxes into forts, arcades, and inventions.",
+ contents:["Makedo screws and connectors","Cardboard saws (kid-safe)","Screwdriver tools per kit"],
+ bands:["K-2","3-5","6-8"],
+ howto:["Collect cardboard for a week before checkout — you'll need more than you think.","Demo the safe-saw technique: saw away from the holding hand.","Students punch, screw, and connect — no tape or glue.","Unscrew everything at the end; the connectors are all reusable."],
+ acts:{"K-2":{t:"Box City",d:"The class transforms boxes into a connected city — houses, shops, tunnels — then 'walks' toy figures through it while narrating. Collaboration and spatial thinking at scale."},
+       "3-5":{t:"Cardboard Arcade",d:"Caine's Arcade-style: students engineer working arcade games from cardboard, then run them at a family night or recess event. The engagement is off the charts."},
+       "6-8":{t:"Wearable Cardboard Tech",d:"Design challenge: build wearable armor, helmets, or product prototypes with moving parts. Add Makey Makey or micro:bits for interactive upgrades."}},
+ tip:"Combine with Canary Knives for older students who need cleaner, faster cuts."},
+
+{id:"canary",name:"Canary Cardboard Knives",cat:"Engineering & Making",qty:"20 cutters",
+ short:"Serrated safety knives that cut cardboard cleanly but resist cutting skin.",
+ contents:["20 Canary cardboard cutters"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Demo first: saw motion, cut away from your body, flat hand never in the path.","Cut on a mat or scrap-cardboard surface.","Count knives out and count them back in — every time."],
+ acts:{"3-5":{t:"Precision Prototyping",d:"Students upgrade a rough cardboard prototype (from any project) with clean cuts, windows, and doors, comparing before/after craftsmanship. Tool skills build maker confidence."},
+       "6-8":{t:"Flat-Pack Furniture Challenge",d:"Teams design doll-scale furniture that assembles from flat cardboard pieces without tape — cutting slots and tabs like real flat-pack designers."},
+       "9-12":{t:"Product Packaging Design",d:"Students reverse-engineer real packaging, then design and cut custom protective packaging for a fragile object, testing with a drop challenge."}},
+ tip:"These are the perfect Makedo companion — check them out together for big cardboard builds."},
+
+{id:"strawbees",name:"Strawbees Kit",cat:"Engineering & Making",qty:"1 kit",
+ short:"Connectors and straws for building quick, light geometric structures and mechanisms.",
+ contents:["Strawbees connectors and construction straws"],
+ bands:["K-2","3-5","6-8"],
+ howto:["Connectors slide into straw ends — demo the pinch-and-push.","Start with 2D shapes, then combine into 3D structures.","Triangles are strong, squares are wobbly — let students discover this.","Cut straws to custom lengths for advanced builds."],
+ acts:{"K-2":{t:"Shape Detectives",d:"Students build 2D shapes, then discover which are 'strong' and which collapse, hunting for triangles in real buildings via photos. Geometry meets engineering intuition."},
+       "3-5":{t:"Geodesic Dome Build",d:"Small groups build domes from triangles and test what they can support. Connects shapes, structures, and teamwork in one build."},
+       "6-8":{t:"Moving Mechanisms",d:"Students engineer a working mechanism — grabber claw, extending arm, drawing machine — exploring joints and linkages with instant iteration."}},
+ tip:"Nearly silent and mess-free — one of the best kits for classrooms with tight cleanup windows."},
+
+{id:"squaregles",name:"Squaregles",cat:"Engineering & Making",qty:"2 sets",
+ short:"Magnetic building panels plus a marble-run expansion for physics-rich construction play.",
+ contents:["Squaregles Starter Set","Drop n Jump Racetrack expansion set"],
+ bands:["K-2","3-5"],
+ howto:["Panels connect magnetically — build walls, boxes, and towers.","Add the racetrack pieces to route marbles through builds.","Challenge: the slowest possible marble journey.","Magnets make cleanup genuinely fast."],
+ acts:{"K-2":{t:"Marble Coaster Engineers",d:"Students build marble runs and test them, fixing 'stuck spots' — cause-and-effect reasoning with immediate feedback little kids adore."},
+       "3-5":{t:"Slow Marble Challenge",d:"Teams compete to make a marble take the longest possible time to reach the bottom, timing runs and iterating. Sneaky lesson in energy, friction, and fair testing."}},
+ tip:"The 'slowest marble' challenge flips expectations and produces the best engineering talk."},
+
+{id:"3doodler",name:"3Doodler 3D Pen Class Kit",cat:"Engineering & Making",qty:"30 pens",isNew:true,
+ short:"A full class set of 3D printing pens — students draw plastic structures that harden instantly in mid-air.",
+ contents:["30 3Doodler 3D pens","Charging docks","Rainbow assortment of filament"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Charge/warm up pens before class (~2-3 min heat time).","Demo: slow steady squeeze, anchor lines to the paper first.","Draw flat shapes on templates, then build up into 3D.","Filament hardens in seconds — mistakes peel off and you retry.","Pens are hot at the tip: one-way-to-hold rule."],
+ acts:{"3-5":{t:"2D-to-3D Shape Lift",d:"Students trace flat shapes, then 'lift' them into 3D forms — squares become cubes, triangles become pyramids. Geometry vocabulary gets a literal third dimension."},
+       "6-8":{t:"Design a Working Object",d:"Students design and doodle a functional object — phone stand, cable holder, name plate — testing and reinforcing weak points. Fast, tactile product design."},
+       "9-12":{t:"Wireframe Prototyping",d:"Students sketch a product concept, then build a 3D wireframe prototype and critique structural choices — a bridge between sketching and CAD/3D printing."}},
+ tip:"Template sheets under wax paper give beginners instant success — start there."},
+
+{id:"einscan",name:"EinScan SE V2 3D Scanner",cat:"Engineering & Making",qty:"1 setup",
+ short:"Scan real objects into precise 3D models you can edit, remix, or 3D print.",
+ contents:["EinScan SE V2 scanner with rotating turntable","ThinkPad laptop with EinScan software","Laptop charger"],
+ bands:["6-8","9-12"],
+ howto:["Place the object on the turntable, launch EinScan software on the included laptop.","Calibrate, then run a scan — the table rotates automatically.","Multiple scans merge automatically into one model.","Export as STL for 3D printing or editing in Tinkercad."],
+ acts:{"6-8":{t:"Artifact Digitization Lab",d:"Students scan classroom 'artifacts' (fossils, tools, sculptures) and build a digital museum with written exhibit cards — museum science meets 3D tech."},
+       "9-12":{t:"Scan, Remix, Print",d:"Students scan a real object, modify the mesh in Tinkercad/Blender (add a feature, fix a flaw), and print the remix on the Bambu. The full digital-fabrication pipeline in one project."}},
+ tip:"Check out with the Bambu 3D printer for the complete scan-edit-print workflow."},
+
+{id:"bambu",name:"Bambu Lab A1 3D Printer",cat:"Engineering & Making",qty:"1 · A1 Combo",
+ short:"A fast, modern, multi-color 3D printer that turns student designs into real objects.",
+ contents:["Bambu A1 Combo (with AMS lite multi-color unit)","4 colors of filament","SD card for file transfer","Toolkit"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Level-free setup: the A1 auto-calibrates on startup.","Students design in Tinkercad (free, browser) and export STL files.","Slice in Bambu Studio, save to SD card, and print.","First print: something small (~20 min) so students see the full cycle.","Keep the printer where students can safely watch — it's the best advertisement for design iteration."],
+ acts:{"3-5":{t:"Design a Keychain",d:"Every student designs a personalized keychain in Tinkercad — name, initials, favorite animal — and watches it print. A first taste of 'I designed a real thing.'"},
+       "6-8":{t:"Problem-Solvers Print Shop",d:"Students find a small problem in the classroom (chair glide, pencil holder, door stop) and design, print, and install a fix. Authentic engineering with visible impact."},
+       "9-12":{t:"Client-Based Design Brief",d:"Students take a 'client' (a teacher, the office, a younger class), gather requirements, and deliver a printed solution through design reviews — professional workflow included."}},
+ tip:"Multi-color printing via the AMS is a showstopper — but single-color prints are 2-3x faster for classwork."},
+/* ===== ROBOTICS ===== */
+{id:"indi",name:"Sphero indi Class Pack",cat:"Robotics",qty:"8 robots",isNew:true,
+ short:"Screen-free coding cars for young learners — indi reads color tiles on the floor and follows their commands.",
+ contents:["8 indi robots","Color tile sets (each color = a command)","Challenge cards","Charging case"],
+ bands:["K-2","3-5"],
+ howto:["Lay color tiles on the floor — each color is a command (turn, speed up, celebrate).","Place indi at the start and let it drive the tile path.","Students redesign tile sequences to change the route.","Older students can re-map what colors mean in the Sphero Edu Jr app."],
+ acts:{"K-2":{t:"indi Storybook Roads",d:"Students build tile roads through a story map ('drive indi from home to school, past the park') and narrate the journey. Sequencing, directional words, and cause-and-effect — zero screens."},
+       "3-5":{t:"Custom Command Lab",d:"Using the app, students reprogram what each color tile does, then design puzzle courses for other teams to decode. Abstraction and encoding, disguised as a game."}},
+ tip:"Tape the tiles down lightly for younger groups — enthusiastic feet relocate roads."},
+
+{id:"dash",name:"Dash Robots",cat:"Robotics",qty:"1 kit · 5 robots",
+ short:"Friendly, drivable, programmable robots with sounds, lights, and sensors for elementary coders.",
+ contents:["5 Dash robots","1 set of Dash/Dot coding cards","Charging cables"],
+ bands:["K-2","3-5"],
+ howto:["Charge Dash before class (micro-USB).","Connect via the free Blockly or Wonder app on a tablet/Chromebook.","Start with Drive mode to learn controls, then switch to coding.","Use the coding cards for unplugged planning before app time."],
+ acts:{"K-2":{t:"Dash Delivers",d:"Dash becomes a delivery robot carrying notes or small objects between stations students map out. Students program each 'route' — a first taste of algorithms with a job to do."},
+       "3-5":{t:"Robot Obstacle Rally",d:"Teams program Dash through a taped obstacle course using sensors to react to walls, competing on accuracy rather than speed. Debugging becomes the main event."}},
+ tip:"Five robots = perfect station rotation for a full class."},
+
+{id:"ozobot",name:"Ozobot Kits",cat:"Robotics",qty:"4 kits · 18 bots each",
+ short:"Tiny robots that read color codes drawn with markers — coding with paper and pens.",
+ contents:["18 Ozobots per kit","Markers","Chargers","Coding sheets"],
+ bands:["K-2","3-5","6-8"],
+ howto:["Calibrate each Ozobot on a black dot before use (hold button, place on dot).","Draw thick black lines — Ozobot follows them.","Add color-code sequences (blue-red-blue = turbo!) from the code sheets.","Level up to Ozoblockly.com for block-based programming."],
+ acts:{"K-2":{t:"Color Code Roads",d:"Students draw roads with speed-up, slow-down, and spin codes, predicting what their bot will do at each code. Reading, drawing, and coding in one tiny package."},
+       "3-5":{t:"Story Path Maps",d:"Students map a story or historical journey (Oregon Trail, a novel's plot) as an Ozobot path with color-coded events at each stop, narrating as the bot travels."},
+       "6-8":{t:"Ozoblockly Precision Challenges",d:"Using block code instead of markers, teams program exact geometric paths — squares, stars, figure-eights — calculating angles and distances. Geometry meets robotics."}},
+ tip:"With 4 kits × 18 bots, you can outfit multiple classrooms at once — great for grade-level events."},
+
+{id:"sphero-bolt",name:"Sphero Bolt Power Pack",cat:"Robotics",qty:"15 robots + charging case",
+ short:"The classic programmable robot ball with LED matrix, sensors, and a rolling charging case.",
+ contents:["15 Sphero Bolts","Rolling charging case","Floor tape","Compasses"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Charge the whole case overnight before checkout day.","Connect via Sphero Edu app (Bluetooth) on tablets/Chromebooks.","Aim each Bolt first — blue tail light faces you.","Start with Draw mode, graduate to Blocks, then JavaScript.","Floor tape defines arenas and paths."],
+ acts:{"3-5":{t:"Sphero Mini-Golf",d:"Teams design taped 'golf holes' with obstacles, then program Bolts to complete each other's courses in the fewest runs. Angles and estimation, endlessly replayable."},
+       "6-8":{t:"Math in Motion",d:"Students program Bolts to draw geometric shapes at exact scale — perimeter, angles, ratios — verifying with the floor tape and compasses. The math is the debugging."},
+       "9-12":{t:"Sensor-Driven Autonomy",d:"Using JavaScript in Sphero Edu, students build autonomous behaviors with the gyroscope and accelerometer — self-correcting paths, collision responses — and present their algorithm design."}},
+ tip:"The LED matrix on Bolt is programmable too — scoreboards, emotes, and data displays add personality."},
+
+{id:"sphero-bolt-plus",name:"Sphero Bolt+ Power Pack",cat:"Robotics",qty:"15 robots + charging case",
+ short:"The upgraded Bolt with a full-color LCD screen for richer displays and feedback.",
+ contents:["15 Sphero Bolt+ robots with LCD screens","Charging case","Floor tape","Compasses"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Same Sphero Edu app workflow as the original Bolt.","The LCD screen can show images, animations, and live sensor data.","Aim before driving — screen faces you at start.","Use the screen for team identity: each squad designs its bot's 'face.'"],
+ acts:{"3-5":{t:"Emotive Robot Theater",d:"Teams program short robot 'plays' where Bolt+ characters drive, react, and emote on their screens. Storytelling meets sequencing with a built-in audience."},
+       "6-8":{t:"Live Data Dashboards",d:"Students display live sensor readouts (speed, heading) on the LCD while running experiments — turning each robot into its own lab instrument."},
+       "9-12":{t:"Swarm Choreography",d:"Groups choreograph multi-robot synchronized routines with coordinated screens and paths, managing timing across programs — a real taste of distributed systems thinking."}},
+ tip:"Functionally identical to Bolt in the app — mix packs for a 30-robot mega-event."},
+
+{id:"vex-iq",name:"VEX IQ Robotics Kits",cat:"Robotics",qty:"15 kits",
+ short:"Full build-and-code robotics: motors, sensors, a programmable brain, and hundreds of structural parts.",
+ contents:["15 VEX IQ kits — brain, motors, sensors, batteries, wheels, structural parts","Build and coding instructions","Accompanying Cube Kits also available"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Follow the included build instructions for the base robot ('Clawbot'-style).","Code with VEXcode IQ (blocks or Python) on Chromebooks.","Driver control works out of the box for early wins.","Budget 2-3 sessions for the first build — it's part of the learning."],
+ acts:{"3-5":{t:"Build Team Robotics",d:"Small teams build the standard robot over several sessions with rotating roles (parts manager, builder, checker), then drive it through a cooperative challenge. Following technical directions is the hidden curriculum."},
+       "6-8":{t:"Cube Collection Showdown",d:"Using the Cube Kits, teams modify their robots' claws and strategy for a cube-collecting match, alternating driver control and autonomous periods like real VEX competition."},
+       "9-12":{t:"Autonomous Engineering Cycle",d:"Teams program fully autonomous routines with sensor feedback, maintaining an engineering notebook of iterations — mirroring competitive robotics and college-level design process."}},
+ tip:"15 kits supports a whole class in teams of 2 — the largest robotics experience in the LoT."},
+
+{id:"kubo",name:"KUBO Robot Kit",cat:"Robotics",qty:"1 kit",
+ short:"Screen-free coding with physical TagTile puzzle pieces — KUBO drives the code students assemble.",
+ contents:["KUBO robot","TagTile coding tiles","Activity map","Educator's guide"],
+ bands:["K-2"],
+ howto:["Students snap TagTiles together into a 'program' on the map.","Place KUBO on the start tile — it reads and performs the route.","Introduce function tiles to teach reusable code chunks.","The educator's guide has ready-made lesson sequences."],
+ acts:{"K-2":{t:"Tile Trail Adventures",d:"Students build tile programs to route KUBO around the map to story destinations, then try KUBO's signature move: recording a tile sequence as a reusable 'function.' Possibly the gentlest intro to functions ever made."}},
+ tip:"The function-tile concept is unique among K-2 robots — lean into it."},
+
+{id:"lego-spike",name:"LEGO SPIKE Prime Robots",cat:"Robotics",qty:"4 kits",
+ short:"LEGO's flagship classroom robotics: motors, sensors, and a hub that brings builds to life.",
+ contents:["4 LEGO SPIKE Prime kits — hub, motors, color/force/distance sensors, technic elements"],
+ bands:["3-5","6-8"],
+ howto:["Open the SPIKE app (Chromebook-friendly) and pick a unit.","Guided builds pair step-by-step instructions with coding lessons.","Blocks first; Python is available for advanced students.","Sort-by-tray cleanup keeps 500+ pieces sane."],
+ acts:{"3-5":{t:"Helpful Inventions",d:"Students build and program a 'helper' robot from the guided units (sorting machine, delivery cart), then explain who it helps and how to improve it. Engineering with empathy built in."},
+       "6-8":{t:"Sensor Olympics",d:"Teams engineer robots for events — line following, precise-distance driving, object detection — earning points for accuracy. Each event isolates one sensor skill before combining them."}},
+ tip:"4 kits = ideal for a station or club; pair with VEX IQ for a whole-class robotics unit."},
+
+/* ===== EXPLORATION ===== */
+{id:"microscope",name:"Microscope Kit",cat:"Exploration",qty:"1 kit · 2 scopes",
+ short:"Two microscopes with nearly 100 prepared slides — an instant micro-world station.",
+ contents:["2 microscopes","2 sets of 48 prepared slides: animals, bugs, materials, plants"],
+ bands:["K-2","3-5","6-8"],
+ howto:["Start at lowest magnification and center the slide.","Focus with the coarse knob, then the fine knob.","Sketch what you see — drawing forces careful observation.","Let students choose slides; curiosity drives the station."],
+ acts:{"K-2":{t:"Tiny Worlds Drawing Lab",d:"Students view bug and plant slides and draw 'what the microscope sees' next to 'what my eyes see' — an early lesson in tools extending our senses."},
+       "3-5":{t:"Mystery Slide Detective",d:"Cover slide labels; students observe, sketch, and use clue cards to identify each specimen, defending their identifications with observed evidence."},
+       "6-8":{t:"Compare & Classify",d:"Students examine plant vs. animal specimens, document cell-level differences, and build a classification argument from their sketches — foundational life science practice."}},
+ tip:"Two scopes work best as a rotation station with a sketch-journal task for waiting students."},
+
+{id:"stomp-rocket",name:"Stomp Rocket Kit",cat:"Exploration",qty:"1 kit",
+ short:"Air-powered rockets students launch by stomping — physics you can feel in your feet.",
+ contents:["4 stomp rocket launchers","12 pre-made stomp rockets"],
+ bands:["K-2","3-5","6-8"],
+ howto:["Outside or gym only — these really fly.","Angle the launcher, load a rocket, stomp!","Never look down the launch tube; set a launch-line rule.","Measure distances with chalk or cones for instant data."],
+ acts:{"K-2":{t:"Stomp & Measure",d:"Students predict, launch, and measure distances with non-standard units (footsteps, meter sticks), comparing big stomps vs. small stomps. Measurement plus cause-and-effect, with cardio."},
+       "3-5":{t:"Launch Angle Lab",d:"Teams test launch angles (30°, 45°, 60°), record distances across trials, and graph results to find the optimal angle — a genuine controlled experiment."},
+       "6-8":{t:"Design Your Own Rocket",d:"Students build custom paper rockets (fins, nose cones, lengths) for the launchers and run flight trials, connecting design variables to flight performance."}},
+ tip:"Paper rocket templates + the launchers = a design-test-iterate unit that costs almost nothing."},
+
+{id:"mavic",name:"DJI Mavic 2 Drone",cat:"Exploration",qty:"1 · with case",
+ short:"A professional camera drone for aerial photography, mapping, and perspective-changing projects.",
+ contents:["DJI Mavic 2 drone + controller (iPhone/Android connectors)","3 rechargeable batteries + multi-charger","Protective carrying case","SD cards"],
+ bands:["6-8","9-12"],
+ howto:["Adults fly or directly supervise — review school/district drone guidance first.","Charge all 3 batteries; each gives ~25 minutes.","Calibrate compass at the flight site.","Fly open outdoor areas only, away from people and buildings.","Footage saves to SD for classroom editing."],
+ acts:{"6-8":{t:"Bird's-Eye Geography",d:"Capture aerial imagery of the school grounds, then have students create labeled maps and compare with satellite views — scale, perspective, and geography made personal."},
+       "9-12":{t:"Aerial Storytelling",d:"Students storyboard and direct (with adult pilot) aerial shots for a school documentary or campus tour video, learning cinematography planning and FAA-awareness along the way."}},
+ tip:"Pair with WeVideo subscriptions to edit the aerial footage into finished films."},
+
+{id:"dwarf-telescope",name:"Dwarf 3 Smart Telescope",cat:"Exploration",qty:"1 · with tripod & case",
+ short:"A smart telescope that photographs planets, nebulae, and galaxies — right from Littleton.",
+ contents:["Dwarf 3 smart telescope","Tripod","Carrying case with screen cleaner, sun filter, charging cord"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Control via the Dwarf app on a phone/tablet — it auto-finds targets.","Daytime: use the SUN FILTER for solar viewing (never without it).","Night events: the scope stacks exposures automatically for deep-sky images.","Images save to the app/SD — instant astronomy portfolio."],
+ acts:{"3-5":{t:"Sun Spotters",d:"Using the solar filter during class, students observe and sketch sunspots, comparing across days to discover the sun rotates and changes. A safe, jaw-dropping daytime astronomy lab."},
+       "6-8":{t:"Moon Journal Project",d:"Across a checkout window, capture moon images at different phases; students assemble them into an explained phase model using their own photos rather than textbook diagrams."},
+       "9-12":{t:"Deep-Sky Imaging Night",d:"Host an astronomy night where students queue targets (nebulae, clusters, galaxies), then process and present their images with research on each object — real observational astronomy."}},
+ tip:"See actual images taken with this scope in Littleton — ask Nick! Great hook for a family astronomy night."},
+/* ===== VIDEO & AUDIO ===== */
+{id:"qball",name:"Qball Throwable Microphone",cat:"Video & Audio",qty:"3 Qballs",
+ short:"A soft, throwable wireless microphone — toss it to whoever's talking and every voice gets heard.",
+ contents:["3 Qballs (throwable mic in foam ball)","1 receiver per Qball"],
+ bands:["K-2","3-5","6-8","9-12"],
+ howto:["Plug the receiver into your speaker/sound system.","Power on the Qball — you're live.","Toss it to the speaker; the foam protects the mic (and heads).","Works for discussions, assemblies, recordings, and game shows."],
+ acts:{"K-2":{t:"Toss-and-Tell Circle",d:"Catch the ball, share your idea, toss it on — turn-taking with a built-in talking piece that amplifies quiet voices, literally."},
+       "3-5":{t:"Classroom Game Show",d:"Run a review-game show where contestants must catch the Qball to answer. Engagement doubles when the mic flies."},
+       "6-8":{t:"Socratic Seminar Amplified",d:"Use the Qball to pace a Socratic seminar — it slows interruptions, marks the speaker, and records cleanly if you're capturing discussion evidence."},
+       "9-12":{t:"Town Hall Debate",d:"Host a structured town-hall debate where floor speakers receive the thrown mic — practicing public speaking with real audio dynamics."}},
+ tip:"Also brilliant for recording student voice for podcasts when paired with the Podcasting Kit."},
+
+{id:"podcasting",name:"Podcasting Kit",cat:"Video & Audio",qty:"1 full kit",
+ short:"Everything needed to record a real multi-mic podcast — no computer required.",
+ contents:["4 podcasting mic kits","4 mic stands","Zoom PodTrak standalone recorder","Rechargeable batteries + charger","64 GB SD card"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Plug mics into the PodTrak's 4 inputs — it records without a computer.","Sound-check each speaker; watch the level meters.","Record to SD; each mic gets its own track.","Import to WeVideo or any editor for editing and music.","Quiet-ish room + the Sound Shield = surprisingly professional results."],
+ acts:{"3-5":{t:"Expert Interview Show",d:"Student pairs research a topic, then record a 5-minute 'expert interview' episode with host and guest roles. Speaking, listening, and summarizing in one authentic product."},
+       "6-8":{t:"Serialized Class Podcast",d:"Launch a recurring class podcast — news, book talks, science explainers — with rotating production roles (host, engineer, editor, producer) each episode."},
+       "9-12":{t:"Documentary Audio Storytelling",d:"Students produce an NPR-style narrative piece with interviews, narration, and sound design, learning journalistic ethics and editing craft along the way."}},
+ tip:"The PodTrak's separate tracks mean one loud kid can be turned down in the edit. Bless."},
+
+{id:"padcaster",name:"PadCaster Video Kit",cat:"Video & Audio",qty:"1 kit",
+ short:"Turns an iPad into a professional video rig with lens, mic, tripod mount, and lights.",
+ contents:["PadCaster frame and accessories for professional iPad video recording"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Mount the iPad in the PadCaster frame.","Attach mic and lens; mount on a tripod for stable shots.","Frame using rule of thirds; check audio with headphones.","Shoot, then edit in WeVideo or iMovie."],
+ acts:{"3-5":{t:"School News Desk",d:"Students run a morning-announcements-style news show with anchors, reporters, and a camera operator. Reading fluency practice that students beg to do."},
+       "6-8":{t:"How-To Video Studio",d:"Students script and film polished tutorial videos teaching a real skill, focusing on shot variety, audio quality, and clear sequencing of steps."},
+       "9-12":{t:"Mini-Documentary Production",d:"Teams produce short documentaries on a school or community story — planning interviews, b-roll, and narration through a full production pipeline."}},
+ tip:"Stable mount + external mic solves the two things that make student video look amateur."},
+
+{id:"wevideo",name:"WeVideo Subscriptions",cat:"Video & Audio",qty:"80 premium seats",
+ short:"Premium browser-based video editing that works beautifully on Chromebooks, with Google sign-in.",
+ contents:["80 premium WeVideo subscriptions","Linked to LPS Google sign-ins for easy access"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Request seats through the checkout form (tell Nick how many).","Students sign in with their LPS Google accounts.","Premium unlocks screen recording, green screen, stock media, and full exports.","Cloud-based: projects follow students to any device."],
+ acts:{"3-5":{t:"Book Trailer Studio",d:"Students create movie-style trailers for books they've read using stock footage, music, and voiceover — persuasion and summarization with cinematic stakes."},
+       "6-8":{t:"Green Screen Reports",d:"Using WeVideo's green screen tool, students report 'on location' from the rainforest, ancient Rome, or inside a cell. Research presented with production value."},
+       "9-12":{t:"PSA Campaign",d:"Teams produce 60-second public service announcements on a researched issue, studying persuasive techniques and editing rhythm, then screen them for an authentic audience."}},
+ tip:"The single most-requested pairing: WeVideo + PadCaster + Podcasting Kit = full media studio."},
+
+{id:"sound-shield",name:"Sound Shield Vocal Filters",cat:"Video & Audio",qty:"2 shields",
+ short:"Curved acoustic filters that wrap behind a mic to cut room echo for cleaner recordings.",
+ contents:["2 Sound Shield vocal reflection filters"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Position the shield behind the microphone, curved toward the speaker.","Record close to the mic (6-8 inches) inside the shield's curve.","Any quiet corner becomes a passable recording booth."],
+ acts:{"3-5":{t:"Fluency Recording Booth",d:"Set up a reading-fluency station where students record polished read-alouds of favorite passages and compare recordings across the year."},
+       "6-8":{t:"Voiceover Studio",d:"Students record clean narration tracks for their video and podcast projects, learning mic technique — distance, plosives, and retakes."},
+       "9-12":{t:"Audiobook Chapter Project",d:"Students produce a professionally-narrated audiobook chapter with character voices and pacing choices, analyzing what narrators actually do."}},
+ tip:"Checks out perfectly alongside the Podcasting Kit — together they sound studio-grade."},
+
+{id:"stikbot",name:"StikBot Stop Motion Kit",cat:"Video & Audio",qty:"1 kit",
+ short:"Poseable figures, tripod, and green screen for creating stop-motion animated films.",
+ contents:["Various StikBot poseable figures","Phone tripod","Blue/green screen"],
+ bands:["K-2","3-5","6-8"],
+ howto:["Download the free Stikbot Studio app (or any stop-motion app).","Mount the phone/tablet on the tripod — stability is everything.","Pose, snap, move slightly, snap again. ~10 frames per second of film.","Use the green screen to drop in any background.","Add voices and music in the app."],
+ acts:{"K-2":{t:"One-Scene Wonders",d:"Small groups animate a single simple action — a dance, a jump, a wave — learning the pose-snap-move rhythm and celebrating a 5-second premiere."},
+       "3-5":{t:"Animated Retell",d:"Teams animate a scene from a book or a science process (water cycle, seed growth), writing a shot list first. Storyboarding is the secret literacy win."},
+       "6-8":{t:"Green Screen Film Fest",d:"Students write, animate, and score original shorts with green-screen backgrounds, then host a festival with awards for story, animation, and sound."}},
+ tip:"Patience-friendly tip: assign roles (director, animator, camera) and rotate every 20 frames."},
+
+/* ===== CREATIVITY & PUZZLES ===== */
+{id:"breakout",name:"Breakout Box Kit",cat:"Creativity & Puzzles",qty:"6 boxes",
+ short:"Escape-room-in-a-box: locks, clues, and blacklights for puzzle-based review and teamwork.",
+ contents:["6 breakout boxes, each with: small lock box, 4-digit lock, 3-digit lock, 2 letter/direction locks, key lock, lock hasp","Hint cards","Blacklight pens + flashlights","Reflection cards"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Pick or design a game: puzzles whose answers open each lock.","Free pre-made games at breakoutedu.com or build your own around unit content.","Set up boxes identically; teams race to open them.","Use hint cards to keep stuck teams moving.","Debrief with the reflection cards — the teamwork talk matters most."],
+ acts:{"3-5":{t:"Storybook Escape",d:"A read-aloud hides clues: comprehension questions unlock each lock until the final box opens with a class reward. Rereading for evidence has never been so urgent."},
+       "6-8":{t:"Unit Review Breakout",d:"Convert unit review into lock combinations — solving math problems, decoding vocabulary, and blacklight-revealing hidden clues. Better than any review worksheet."},
+       "9-12":{t:"Student-Designed Escapes",d:"Flip it: teams design breakout games for another class, engineering puzzle difficulty and clue flow. Designing the puzzle demands deeper mastery than solving one."}},
+ tip:"Six identical boxes = six competing teams. Build one game, run it all day."},
+
+{id:"button-maker",name:"Button Maker",cat:"Creativity & Puzzles",qty:"1 machine",
+ short:"Design, press, and wear custom pin-back buttons — instant merch for any project or cause.",
+ contents:["Button maker press","Button components (shells, mylar, pin backs)"],
+ bands:["K-2","3-5","6-8","9-12"],
+ howto:["Design artwork in the button-circle template (paper or digital).","Cut out the circle, layer it with mylar in the press.","Press once to crimp, rotate, press again to finish.","Adult or trained student operates the press; everyone designs."],
+ acts:{"K-2":{t:"I'm-An-Expert Buttons",d:"Students design buttons declaring something they've mastered ('I can count to 100!') and wear them proudly — identity and celebration in pin form."},
+       "3-5":{t:"Campaign Buttons",d:"Students create persuasive campaign buttons for book characters, historical figures, or class elections, distilling an argument into one small circle."},
+       "6-8":{t:"Cause Merch Design",d:"Teams design button 'merch lines' for a cause they research, considering message, audience, and visual design — mini social marketing campaigns."},
+       "9-12":{t:"Club & Event Branding",d:"Student groups produce real buttons for school events, clubs, or fundraisers, running the full design-production-distribution pipeline."}},
+ tip:"Buttons make school events feel official — counselors love this one for kindness campaigns."},
+
+{id:"wacom",name:"Wacom Drawing Tablets",cat:"Creativity & Puzzles",qty:"10 tablets",
+ short:"Pressure-sensitive drawing tablets for digital art, annotation, and design.",
+ contents:["10 Wacom drawing tablets with pens"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Plug into a computer via USB — the tablet maps to the screen.","Use free tools: Chrome Canvas, Sumo Paint, or Photopea.","Let students practice tracing first; pen-to-screen mapping takes ~10 minutes to click.","Also great for teachers: annotate live over anything you project."],
+ acts:{"3-5":{t:"Digital Illustrated Stories",d:"Students illustrate their own writing digitally, learning layers and undo as creative superpowers, then publish story + art as a class ebook."},
+       "6-8":{t:"Infographic Design Studio",d:"Students hand-illustrate infographics about research topics, combining drawn elements with data — a design-thinking alternative to slide decks."},
+       "9-12":{t:"Digital Portfolio Pieces",d:"Art and design students produce finished digital illustrations exploring professional workflows — sketching, inking, and coloring in layers like industry artists."}},
+ tip:"Photopea (free, browser) is a near-Photoshop experience that works on school machines."},
+
+{id:"bloxel",name:"Bloxels Kits",cat:"Creativity & Puzzles",qty:"2 kits · 8 sets each",
+ short:"Build video game levels with physical colored blocks, then photograph them into playable games.",
+ contents:["8 Bloxels sets per kit — game boards and colored cubes"],
+ bands:["3-5","6-8"],
+ howto:["Lay colored blocks on the grid board — each color is a game element (terrain, hazard, coin, enemy).","Photograph the board with the free Bloxels app.","The layout becomes a playable platformer level instantly.","Design characters and art the same way — block by block."],
+ acts:{"3-5":{t:"Story-World Game Design",d:"Students build a playable game level based on a book's setting, deciding which plot obstacles become hazards. Reading comprehension you can play."},
+       "6-8":{t:"Game Design Studio",d:"Teams design multi-room games with difficulty curves, playtest each other's levels, and revise based on player feedback — the real game-design loop."}},
+ tip:"The physical-to-digital moment when their block layout becomes playable is pure magic — don't spoil it, let them discover."},
+
+{id:"gt-challenge",name:"GT Challenge Kit",cat:"Creativity & Puzzles",qty:"1 kit",
+ short:"Brain-bending puzzles: Kanoodle logic games and a fleet of Rubik's cubes.",
+ contents:["4 Kanoodle games","4 3×3 Rubik's cubes","20 2×2 Rubik's cubes"],
+ bands:["K-2","3-5","6-8","9-12"],
+ howto:["Kanoodle: pick a challenge card, place the starting pieces, solve the rest.","Rubik's 2×2s are the friendly entry point — learn one solving method as a class.","Run as a puzzle station, early-finisher shelf, or full challenge day.","Track personal bests, not rankings."],
+ acts:{"K-2":{t:"Puzzle Persistence Center",d:"A rotating puzzle station with Kanoodle beginner cards where the goal is 'stuck is where learning starts' — building frustration tolerance through play."},
+       "3-5":{t:"Cube Club Method",d:"Teach the beginner 2×2 method step-by-step; students practice toward a personal-best time and coach each other. Algorithms, literally in hand."},
+       "6-8":{t:"Speedcube Statistics",d:"Students log solve times across sessions and analyze their own improvement curves — mean, median, outliers — with data they're invested in."},
+       "9-12":{t:"Algorithm Analysis",d:"Connect cube notation and solving methods to algorithmic thinking: students document a solve as an algorithm and analyze move-count efficiency."}},
+ tip:"With 20 2×2 cubes, you can run a whole-class simultaneous solve — a great brain-break ritual."},
+
+{id:"heat-press",name:"Heat Press (5-in-1)",cat:"Creativity & Puzzles",qty:"1 machine + attachments",
+ short:"Press custom designs onto shirts, hats, mugs, and plates — a product studio in a box.",
+ contents:["5-in-1 heat press machine","Hat press attachment","Mug press attachment","Plate press attachment"],
+ bands:["6-8","9-12"],
+ howto:["Design artwork (mirror it for transfers!) and print on transfer paper, or cut heat-transfer vinyl with the Cricut.","Set temperature and time for your material (guides included).","Adult operates the press — it gets seriously hot.","Position, press, peel. Instant product."],
+ acts:{"6-8":{t:"Product Launch Lab",d:"Teams design a product line (shirt, mug), calculate material costs, set prices, and pitch their brand — entrepreneurship with a real product in hand."},
+       "9-12":{t:"Merch Business Simulation",d:"Students run a real merch operation for a school event or fundraiser: design, production planning, cost accounting, and sales. Applied business, actual profit."}},
+ tip:"Pairs with the Cricut for vinyl designs — check both out for the full production line."},
+
+{id:"cricut",name:"Cricut Joy Set",cat:"Creativity & Puzzles",qty:"1 set",
+ short:"A compact smart cutting machine for vinyl decals, labels, cards, and heat-press designs.",
+ contents:["Cricut Joy with blade and pen","Vinyl and heat-transfer sheets in a variety of colors","Weeding and placement tools"],
+ bands:["3-5","6-8","9-12"],
+ howto:["Design in Cricut Design Space (free) on a computer or tablet.","Load vinyl, send the cut, then 'weed' away the excess.","Use transfer tape to place vinyl decals; use heat-transfer vinyl with the Heat Press for fabric.","The pen attachment also draws cards and labels."],
+ acts:{"3-5":{t:"Label the World",d:"Students design and cut labels and signage for the classroom (supply bins, library sections, garden markers), practicing typography and layout with an immediately useful product."},
+       "6-8":{t:"Sticker Brand Studio",d:"Students design a personal 'brand' and produce vinyl decals, iterating on what cuts cleanly — where graphic design meets manufacturing constraints."},
+       "9-12":{t:"Client Signage Commission",d:"Students take real signage requests from around the school and deliver finished vinyl products through a design-approval-production workflow."}},
+ tip:"'Weeding' the vinyl is oddly the most beloved step. Budget time for it."},
+
+/* ===== BOOKS ===== */
+{id:"book-beep",name:"Beep! Beep! Go to Sleep!",cat:"Books",qty:"6 copies",
+ short:"Todd Tarpley's rhyming tale of three rambunctious robots resisting bedtime.",
+ contents:["6 copies — picture book by Todd Tarpley"],bands:["K-2"],
+ acts:{"K-2":{t:"Robot Bedtime Routines",d:"After reading, students 'program' a bedtime routine as a sequence of steps for a robot, acting it out or coding it on Coding Critters or Code-a-Pillar. Perfect robotics-unit read-aloud."}},
+ tip:"Pairs with Coding Critters or Code-a-Pillar for a K-2 robot day."},
+{id:"book-biomed",name:"Biomedical Engineering & Human Body Systems",cat:"Books",qty:"1 copy",
+ short:"How biomedical engineers diagnose, treat, and prevent problems in human body systems — with hands-on activities.",
+ contents:["1 copy — nonfiction with hands-on activities"],bands:["6-8","9-12"],
+ acts:{"6-8":{t:"Design for a Body",d:"Use a chapter as the launch for an engineering challenge: design a device (brace, prosthetic model, assistive tool) for a body-system need, using the book's design-process framing."},
+       "9-12":{t:"Biomed Career Pathway",d:"Students connect a chapter's engineering case to current biomedical research and map the education pathway into the field — strong for counselor-led career units."}},
+ tip:"Pairs with the 3Doodler or Bambu printer for prosthetic-model design builds."},
+{id:"book-boybot",name:"Boy + Bot",cat:"Books",qty:"6 copies",
+ short:"Ame Dyckman's sweet story of a boy and robot who each try to 'fix' the other.",
+ contents:["6 copies — picture book by Ame Dyckman"],bands:["K-2"],
+ acts:{"K-2":{t:"How Do You Recharge?",d:"Compare what the boy needs and what Bot needs, then have students chart 'human needs vs. robot needs' before meeting a real robot like Dash — a gentle intro to what machines are and aren't."}},
+ tip:"The ideal read-aloud before students meet Dash for the first time."},
+{id:"book-drumcity",name:"Drum City",cat:"Books",qty:"3 copies",
+ short:"Thea Guidone's rhythmic story of one drumbeat growing into a whole city's music.",
+ contents:["3 copies — picture book by Thea Guidone"],bands:["K-2"],
+ acts:{"K-2":{t:"Found-Sound Parade",d:"After reading, students engineer 'drums' from classroom objects and compose a layered class rhythm — sound, vibration, and pattern in one joyful noise."}},
+ tip:"Great with Makey Makey: turn the found drums into digital instruments."},
+{id:"book-drumdream",name:"Drum Dream Girl",cat:"Books",qty:"1 copy",
+ short:"Margarita Engle's true-story-inspired tale of a girl who broke Cuba's taboo against female drummers.",
+ contents:["1 copy — picture book by Margarita Engle"],bands:["K-2","3-5"],
+ acts:{"K-2":{t:"Dreams and Drums",d:"Discuss the rule the drum dream girl faced and how she persisted; students share a dream they'd practice for in secret and set a practice goal."},
+       "3-5":{t:"Breaking Barriers Research",d:"Students research another barrier-breaker in music, sports, or STEM and present the 'rule they rewrote' — persistence and equity through biography."}},
+ tip:"Powerful pairing with any 'who gets to do STEM?' conversation."},
+{id:"book-leo",name:"LEO the Maker Prince",cat:"Books",qty:"5 copies",
+ short:"Carla Diana's journey through 3D printing with LEO, a robot who prints anything Carla draws.",
+ contents:["5 copies — every object in the book is 3D-printable"],bands:["K-2","3-5"],
+ acts:{"K-2":{t:"Draw It, Print It",d:"Students draw an object they wish LEO could print; pick class favorites to actually model and print on the Bambu — the book's premise made real."},
+       "3-5":{t:"Printable Story Objects",d:"Groups find the book's objects online, choose one to print, and explain how 3D printing turns ideas into things — then design their own printable object in Tinkercad."}},
+ tip:"The obvious, perfect companion to a Bambu 3D printer checkout."},
+{id:"book-winter",name:"Winter's Tail",cat:"Books",qty:"6 copies",
+ short:"The true story of Winter the dolphin and the prosthetic tail that helped her swim again.",
+ contents:["6 copies — by the Hatkoffs and David Yates"],bands:["K-2","3-5"],
+ acts:{"K-2":{t:"Helping Tools",d:"After reading, students brainstorm 'tools that help bodies' (glasses, wheelchairs, prosthetics) and design a helping tool for a stuffed animal — empathy-driven engineering."},
+       "3-5":{t:"Prosthetic Design Challenge",d:"Teams design and prototype a prosthetic tail or limb model for an animal using maker materials, connecting to how engineers balanced Winter's comfort and function."}},
+ tip:"Pairs beautifully with Unstoppable for a bionic-animals text set."},
+{id:"book-natgeo",name:"Nat Geo Kids: Robots",cat:"Books",qty:"24 copies",
+ short:"A photo-packed class set exploring today's and tomorrow's coolest robots.",
+ contents:["24 copies — class set by Melissa Stewart"],bands:["K-2","3-5"],
+ acts:{"K-2":{t:"Robot Fact Hunt",d:"With a class set, every student finds and shares one robot fact, building a class 'robot museum' wall — nonfiction text features practice with full-class copies."},
+       "3-5":{t:"Real Robots vs. Our Robots",d:"Students compare a robot from the book to a LoT robot they've used (Dash, Sphero, VEX): sensors, jobs, and limits. Nonfiction reading tied directly to hands-on robotics."}},
+ tip:"24 copies = whole-class nonfiction unit; the natural companion to any robot checkout."},
+{id:"book-unstoppable",name:"Unstoppable: Bionic Animals",cat:"Books",qty:"5 copies",
+ short:"True stories of animals thriving with prosthetics, braces, and wheelchairs.",
+ contents:["5 copies — by Nancy Furstinger"],bands:["3-5","6-8"],
+ acts:{"3-5":{t:"Bionic Animal Profiles",d:"Groups each read a different animal's story and present its problem-solution engineering journey — informational reading with instant emotional hook."},
+       "6-8":{t:"Assistive Tech Design Sprint",d:"Inspired by the animals' devices, teams design an assistive device concept (for animals or people), including 3D-printable parts — connects to the book's real 3D-printing content."}},
+ tip:"Combine with Winter's Tail and the 3D printer for a full assistive-engineering unit."},
+{id:"book-codegames",name:"Coding Games in Python",cat:"Books",qty:"1 copy",
+ short:"A visual, step-by-step guide to building complete games in Python.",
+ contents:["1 copy — DK visual guide"],bands:["6-8","9-12"],
+ acts:{"6-8":{t:"Game Build-Along",d:"Advanced coders follow a chapter to build a complete working game, then add one original 'house rule' feature — structured challenge for students who've outgrown blocks."},
+       "9-12":{t:"Code Study + Remix",d:"Students build a chapter's game, then refactor or extend it (new mechanics, difficulty, graphics), documenting changes like a real dev changelog."}},
+ tip:"Great self-paced resource alongside a Raspberry Pi or Gaming Laptop checkout."},
+{id:"book-creativepython",name:"Creative Coding in Python",cat:"Books",qty:"1 copy",
+ short:"30+ creative Python projects: chatbots, turtle art, adventure games, and apps.",
+ contents:["1 copy — by Sheena Vaidyanathan"],bands:["6-8","9-12"],
+ acts:{"6-8":{t:"Turtle Art Gallery",d:"Students work through the turtle-graphics chapter and generate original geometric art, hosting a gallery with artist statements about their code."},
+       "9-12":{t:"Chatbot Workshop",d:"Using the chatbot chapter as a base, students design a helpful bot for a real audience (study helper, FAQ bot) and demo it — variables and conditionals with personality."}},
+ tip:"The projects work in any free browser Python environment — Chromebook-friendly."},
+{id:"book-ppstem-k2",name:"Picture-Perfect STEM Lessons, K-2",cat:"Books",qty:"1 copy",
+ short:"15 complete K-2 STEM lessons built around beloved picture books.",
+ contents:["1 copy — includes student pages, assessments, and standards connections"],bands:["K-2"],
+ acts:{"K-2":{t:"Ready-Made STEM Week",d:"Pick one lesson (crayon recycling, pet habitats, handy inventions) and run it as written — book pairing, activities, and assessments are all included. The fastest path from checkout to teaching."}},
+ tip:"This is a teacher-planning resource — check it out alongside the maker kits its lessons call for."},
+{id:"book-ppstem-35",name:"Picture-Perfect STEM Lessons, 3-5",cat:"Books",qty:"2 copies",
+ short:"15 complete 3-5 STEM lessons anchored in high-quality picture books.",
+ contents:["2 copies — includes student pages, assessments, and standards connections"],bands:["3-5"],
+ acts:{"3-5":{t:"Plug-and-Play STEM Unit",d:"Choose a lesson (toy car engineering, animal tracking tech, plastic pollution) and pair it with matching LoT tools — the book supplies the plan, the library supplies the stuff."}},
+ tip:"Two copies means grade-level teams can plan together."},
+/*__ITEMS__*/
+];
+
+/* ============ APP ============ */
+const CATS = [...new Set(ITEMS.filter(i=>!i.retired).map(i=>i.cat))];
+const BANDS = ["K-2","3-5","6-8","9-12"];
+let curCat="All", curBand="All", lessonBand="K-2";
+
+function live(){return ITEMS.filter(i=>!i.retired);}
+
+function show(v){
+  document.querySelectorAll('.view').forEach(s=>s.classList.remove('active'));
+  document.getElementById('v-'+v).classList.add('active');
+  document.querySelectorAll('.nav-links button').forEach(b=>b.classList.toggle('active',b.dataset.v===v));
+  window.scrollTo({top:0});
+}
+
+/* Item photos: drop a file named  images/<id>.jpg  next to index.html
+   (e.g. images/indi.jpg). Missing photos show a category icon instead. */
+const CAT_ICONS={"Coding & Circuitry":"💻","Engineering & Making":"🛠️","Robotics":"🤖",
+  "Exploration":"🔭","Video & Audio":"🎬","Creativity & Puzzles":"🧩","Books":"📚"};
+function imgHTML(i,cls){
+  const src=i.img||`${CONFIG.ASSET_BASE}images/${i.id}.jpg`;
+  const icon=CAT_ICONS[i.cat]||"📦";
+  return `<div class="${cls}"><img src="${src}" alt="${i.name}" loading="lazy"
+    onerror="this.parentElement.innerHTML='<span class=&quot;ph&quot;>${icon}</span>'"></div>`;
+}
+
+function cardHTML(i, activityBand){
+  const bands=i.bands&&i.bands.length?i.bands.map(b=>`<span class="tag">${b}</span>`).join(''):'';
+  const extra=activityBand&&i.acts&&i.acts[activityBand]?`<div class="activity" style="margin-top:6px"><b>${i.acts[activityBand].t}</b><span style="font-size:.85rem">${i.acts[activityBand].d}</span></div>`:'';
+  return `<div class="card" onclick="openModal('${i.id}')">
+    ${imgHTML(i,'card-img')}
+    <div class="cat">${i.cat}</div><h3>${i.name}</h3>
+    <div class="desc">${i.short}</div>${extra}
+    <div class="meta">${i.isNew?'<span class="tag new">✨ NEW</span>':''}<span class="tag">${i.qty}</span>${bands}</div></div>`;
+}
+
+function renderChips(){
+  document.getElementById('cat-chips').innerHTML =
+    ['All',...CATS].map(c=>`<button class="chip ${curCat===c?'on':''}" onclick="curCat='${c}';renderChips();renderCatalog()">${c}</button>`).join('');
+  document.getElementById('band-chips').innerHTML =
+    ['All',...BANDS].map(b=>`<button class="chip band ${curBand===b?'on':''}" onclick="curBand='${b}';renderChips();renderCatalog()">${b==='All'?'All grades':b}</button>`).join('');
+}
+
+function renderCatalog(){
+  const q=(document.getElementById('search').value||'').toLowerCase();
+  const list=live().filter(i=>
+    (curCat==='All'||i.cat===curCat)&&
+    (curBand==='All'||(i.bands||[]).includes(curBand))&&
+    (!q||(i.name+' '+i.short+' '+i.cat).toLowerCase().includes(q)));
+  document.getElementById('count-note').textContent=`${list.length} item${list.length===1?'':'s'}`;
+  document.getElementById('catalog-grid').innerHTML=list.map(i=>cardHTML(i)).join('')||'<p>No items match — try clearing filters.</p>';
+}
+
+function renderLessons(){
+  document.getElementById('lesson-band-chips').innerHTML =
+    BANDS.map(b=>`<button class="chip band ${lessonBand===b?'on':''}" onclick="lessonBand='${b}';renderLessons()">${b}</button>`).join('');
+  const list=live().filter(i=>(i.bands||[]).includes(lessonBand)&&i.acts&&i.acts[lessonBand]);
+  document.getElementById('lessons-grid').innerHTML=list.map(i=>cardHTML(i,lessonBand)).join('')||'<p>No activities for this band yet.</p>';
+}
+
+function goCat(c){curCat=c;curBand='All';renderChips();renderCatalog();show('catalog');}
+function renderHome(){
+  const l=live();
+  document.getElementById('stats').innerHTML=CATS.map(c=>{
+    const n=l.filter(i=>i.cat===c).length;
+    return `<button class="cat-tile" onclick="goCat('${c.replace(/'/g,"\\'")}')">
+      <span class="ico">${CAT_ICONS[c]||'📦'}</span><b>${c}</b><small>${n} item${n===1?'':'s'}</small></button>`;
+  }).join('');
+  document.getElementById('new-grid').innerHTML=l.filter(i=>i.isNew).map(i=>cardHTML(i)).join('')||'<p class="count-note">Nothing new right now — check back soon!</p>';
+}
+
+let modalBand=null;
+function openModal(id){
+  const i=ITEMS.find(x=>x.id===id); if(!i)return;
+  document.getElementById('m-cat').textContent=i.cat;
+  document.getElementById('m-name').textContent=i.name;
+  document.getElementById('m-meta').innerHTML=`${i.isNew?'<span class="tag new">✨ NEW</span>':''}<span class="tag">${i.qty}</span>${(i.bands||[]).map(b=>`<span class="tag">${b}</span>`).join('')}`;
+  modalBand=(i.bands||[])[0]||null;
+  renderModalBody(i);
+  document.getElementById('m-checkout').onclick=()=>{closeModal();prefill(i.name);show('checkout');};
+  const g=document.getElementById('m-guide');
+  if(i.cat==='Books'){g.style.display='none';}else{g.style.display='';g.href=`${CONFIG.ASSET_BASE}guides/${i.id}.pdf`;}
+  document.getElementById('overlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function renderModalBody(i){
+  let h=imgHTML(i,'modal-img');
+  h+=`<h4>What's in the kit</h4><ul>${i.contents.map(c=>`<li>${c}</li>`).join('')}</ul>`;
+  if(i.howto&&i.howto.length){h+=`<h4>Quick-Start Guide</h4><ol>${i.howto.map(s=>`<li>${s}</li>`).join('')}</ol>`;}
+  if(i.acts&&Object.keys(i.acts).length){
+    h+=`<h4>Activity Ideas by Grade</h4><div class="band-tabs">${(i.bands||[]).filter(b=>i.acts[b]).map(b=>`<button class="band-tab ${modalBand===b?'on':''}" onclick="modalBand='${b}';renderModalBody(ITEMS.find(x=>x.id==='${i.id}'))">${b}</button>`).join('')}</div>`;
+    const a=i.acts[modalBand]||i.acts[(i.bands||[])[0]];
+    if(a)h+=`<div class="activity"><b>${a.t}</b>${a.d}</div>`;
+  }
+  if(i.tip)h+=`<h4>Pro Tip</h4><p>💡 ${i.tip}</p>`;
+  document.getElementById('m-body').innerHTML=h;
+}
+function closeModal(){document.getElementById('overlay').classList.remove('open');document.body.style.overflow='';}
+
+function prefill(name){
+  const sel=document.getElementById('f-item');
+  [...sel.options].forEach(o=>{if(o.value===name)sel.value=name;});
+}
+
+/* ============ CHECKOUT ============ */
+function fillItemSelect(){
+  const sel=document.getElementById('f-item');
+  CATS.forEach(c=>{
+    const g=document.createElement('optgroup');g.label=c;
+    live().filter(i=>i.cat===c).forEach(i=>{const o=document.createElement('option');o.value=i.name;o.textContent=i.name;g.appendChild(o);});
+    sel.appendChild(g);
+  });
+}
+async function submitCheckout(ev){
+  ev.preventDefault();
+  const f=document.getElementById('checkout-form');
+  const btn=document.getElementById('submit-btn');
+  const data=Object.fromEntries(new FormData(f).entries());
+  data.support=[...f.querySelectorAll('input[name="support"]:checked')].map(c=>c.value).join(', ')||'None';
+  btn.disabled=true;btn.textContent='Sending…';
+  if(CONFIG.APPS_SCRIPT_URL){
+    try{
+      await fetch(CONFIG.APPS_SCRIPT_URL,{method:'POST',mode:'no-cors',
+        headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(data)});
+      showSuccess();
+    }catch(e){mailtoFallback(data);}
+  }else{mailtoFallback(data);}
+  btn.disabled=false;btn.textContent='Submit Request';
+}
+function mailtoFallback(d){
+  const body=encodeURIComponent(
+`LoT Checkout Request
+Name: ${d.name}\nEmail: ${d.email}\nSchool: ${d.school}\nRole: ${d.role}
+Item: ${d.item}\nDate needed: ${d.dateNeeded}\nReturn date: ${d.dateReturn}
+Grades: ${d.grades||'-'}\nPlan: ${d.plan||'-'}\nSupport requested: ${d.support}\nNotes: ${d.notes||'-'}`);
+  window.location.href=`mailto:${CONFIG.FALLBACK_EMAIL}?subject=${encodeURIComponent('LoT Request: '+d.item)}&body=${body}`;
+  document.getElementById('success-msg').textContent='Your email app just opened with the request ready to send — hit send and you\'re done!';
+  showSuccess();
+}
+function showSuccess(){
+  document.getElementById('form-card').style.display='none';
+  document.getElementById('success-card').style.display='block';
+}
+function resetForm(){
+  document.getElementById('checkout-form').reset();
+  document.getElementById('form-card').style.display='block';
+  document.getElementById('success-card').style.display='none';
+}
+
+/* min date = today+3 days */
+(function(){
+  const d=new Date();d.setDate(d.getDate()+3);
+  document.getElementById('f-start').min=d.toISOString().split('T')[0];
+})();
+
+document.getElementById('brand-logo').src=CONFIG.ASSET_BASE+'lps-logo.png';
+renderChips();renderCatalog();renderLessons();renderHome();fillItemSelect();
+</script>
+</body>
+</html>
